@@ -1,10 +1,10 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
+import API_BASE_URL from '../config';
 
 // Create Auth Context
 const AuthContext = createContext(null);
 
-// API Base URL
-import API_BASE_URL from '../config';
+
 
 /**
  * Authentication Context Provider
