@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import ProductCard from './ProductCard';
+import API_BASE_URL from '../config';
 import './ForYou.css';
 
 /**
@@ -23,7 +24,7 @@ const ForYou = () => {
       setLoading(true);
       setError('');
 
-      const response = await fetch('http://localhost:8000/recommendations/for-you', {
+      const response = await fetch(`${API_BASE_URL}/recommendations/for-you`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -45,7 +46,7 @@ const ForYou = () => {
 
   const handleAddToWishlist = async (product) => {
     try {
-      const response = await fetch('http://localhost:8000/preferences/wishlist', {
+      const response = await fetch(`${API_BASE_URL}/preferences/wishlist`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -148,8 +149,8 @@ const ForYou = () => {
               </div>
               <div className="insight-item">
                 <div className="insight-value">
-                  {recommendations.insights.avg_score ? 
-                    `${Math.round(recommendations.insights.avg_score * 100)}%` : 
+                  {recommendations.insights.avg_score ?
+                    `${Math.round(recommendations.insights.avg_score * 100)}%` :
                     'N/A'}
                 </div>
                 <div className="insight-label">Match Score</div>
@@ -198,16 +199,16 @@ const ForYou = () => {
 
         {/* No Recommendations */}
         {(!Array.isArray(recommendations.wishlist_recommendations) || !recommendations.wishlist_recommendations.length) &&
-         (!Array.isArray(recommendations.search_based_recommendations) || !recommendations.search_based_recommendations.length) &&
-         (!Array.isArray(recommendations.trending_products) || !recommendations.trending_products.length) &&
-         (!Array.isArray(recommendations.category_recommendations) || !recommendations.category_recommendations.length) &&
-         (!Array.isArray(recommendations.collaborative_recommendations) || !recommendations.collaborative_recommendations.length) && (
-          <div className="empty-state">
-            <div className="empty-icon">🎯</div>
-            <h3>Start Your Journey</h3>
-            <p>Add products to your wishlist or search for items to get personalized recommendations!</p>
-          </div>
-        )}
+          (!Array.isArray(recommendations.search_based_recommendations) || !recommendations.search_based_recommendations.length) &&
+          (!Array.isArray(recommendations.trending_products) || !recommendations.trending_products.length) &&
+          (!Array.isArray(recommendations.category_recommendations) || !recommendations.category_recommendations.length) &&
+          (!Array.isArray(recommendations.collaborative_recommendations) || !recommendations.collaborative_recommendations.length) && (
+            <div className="empty-state">
+              <div className="empty-icon">🎯</div>
+              <h3>Start Your Journey</h3>
+              <p>Add products to your wishlist or search for items to get personalized recommendations!</p>
+            </div>
+          )}
       </div>
 
       {/* Refresh Button */}

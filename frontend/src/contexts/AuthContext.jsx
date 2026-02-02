@@ -4,7 +4,7 @@ import React, { createContext, useState, useContext, useEffect } from 'react';
 const AuthContext = createContext(null);
 
 // API Base URL
-const API_BASE_URL = 'http://localhost:8000';
+import API_BASE_URL from '../config';
 
 /**
  * Authentication Context Provider
@@ -26,7 +26,7 @@ export const AuthProvider = ({ children }) => {
         setLoading(false);
       }
     };
-    
+
     // Set a maximum timeout for initialization
     const timeoutId = setTimeout(() => {
       if (loading) {
@@ -34,9 +34,9 @@ export const AuthProvider = ({ children }) => {
         setLoading(false);
       }
     }, 3000); // 3 second max wait
-    
+
     initAuth();
-    
+
     return () => clearTimeout(timeoutId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Only run on mount

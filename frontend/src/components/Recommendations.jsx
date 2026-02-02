@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import ProductCard from './ProductCard';
 import ProductDetailsModal from './ProductDetailsModal';
+import API_BASE_URL from '../config';
 import './Recommendations.css';
 
 /**
@@ -26,7 +27,7 @@ const Recommendations = () => {
       setError('');
 
       // Use hybrid strategy by default (best results like Amazon/Flipkart)
-      const url = `http://localhost:8000/recommendations/personalized?strategy=hybrid&limit=50`;
+      const url = `${API_BASE_URL}/recommendations/personalized?strategy=hybrid&limit=50`;
 
       const response = await fetch(url, {
         headers: {
@@ -59,7 +60,7 @@ const Recommendations = () => {
         return;
       }
 
-      const response = await fetch('http://localhost:8000/preferences/wishlist', {
+      const response = await fetch(`${API_BASE_URL}/preferences/wishlist`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

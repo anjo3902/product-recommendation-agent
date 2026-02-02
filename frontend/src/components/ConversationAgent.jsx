@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import ProductCard from './ProductCard';
 import PriceHistoryChart from './PriceHistoryChart';
 import formatOrchestratorResponse from '../utils/formatOrchestratorResponse';
+import API_BASE_URL from '../config';
 import './ConversationAgent.css';
 
 /**
@@ -47,7 +48,7 @@ const ConversationAgent = () => {
 
   const fetchConversations = async () => {
     try {
-      const response = await fetch('http://localhost:8000/conversations/?limit=50', {
+      const response = await fetch(`${API_BASE_URL}/conversations/?limit=50`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -64,7 +65,7 @@ const ConversationAgent = () => {
 
   const fetchSummary = async () => {
     try {
-      const response = await fetch('http://localhost:8000/conversations/summary', {
+      const response = await fetch(`${API_BASE_URL}/conversations/summary`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -127,7 +128,7 @@ const ConversationAgent = () => {
 
           // Save search to history
           try {
-            await fetch('http://localhost:8000/preferences/search-history', {
+            await fetch(`${API_BASE_URL}/preferences/search-history`, {
               method: 'POST',
               headers: {
                 'Authorization': `Bearer ${token}`,
@@ -157,7 +158,7 @@ const ConversationAgent = () => {
       }
 
       // Save conversation to backend
-      const response = await fetch('http://localhost:8000/conversations/', {
+      const response = await fetch(`${API_BASE_URL}/conversations/`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -234,7 +235,7 @@ const ConversationAgent = () => {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 120000);
 
-      const response = await fetch('http://localhost:8000/api/orchestrate/simple', {
+      const response = await fetch(`${API_BASE_URL}/api/orchestrate/simple`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
@@ -318,7 +319,7 @@ const ConversationAgent = () => {
     if (!window.confirm('Are you sure you want to clear all conversations?')) return;
 
     try {
-      const response = await fetch('http://localhost:8000/conversations/clear', {
+      const response = await fetch(`${API_BASE_URL}/conversations/clear`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,

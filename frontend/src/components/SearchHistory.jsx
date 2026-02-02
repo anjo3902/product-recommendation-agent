@@ -1,6 +1,7 @@
 // frontend/src/components/SearchHistory.jsx
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import API_BASE_URL from '../config';
 import './SearchHistory.css';
 
 const SearchHistory = () => {
@@ -10,7 +11,7 @@ const SearchHistory = () => {
   const [error, setError] = useState('');
   const [stats, setStats] = useState(null);
 
-  const API_BASE_URL = 'http://localhost:8000';
+
 
   // Fetch search history
   useEffect(() => {
@@ -22,7 +23,7 @@ const SearchHistory = () => {
     try {
       setLoading(true);
       setError('');
-      
+
       const response = await fetch(`${API_BASE_URL}/preferences/search-history`, {
         method: 'GET',
         headers: {
@@ -133,10 +134,10 @@ const SearchHistory = () => {
     if (diffMins < 60) return `${diffMins} minute${diffMins > 1 ? 's' : ''} ago`;
     if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
     if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
-    
-    return date.toLocaleDateString('en-US', { 
-      year: 'numeric', 
-      month: 'short', 
+
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
       day: 'numeric',
       hour: '2-digit',
       minute: '2-digit'
@@ -160,7 +161,7 @@ const SearchHistory = () => {
 
     searchHistory.forEach(item => {
       const itemDate = new Date(item.search_timestamp);
-      
+
       if (itemDate >= todayStart) {
         grouped.today.push(item);
       } else if (itemDate >= yesterdayStart) {
@@ -322,7 +323,7 @@ const SearchHistoryItem = ({ item, onDelete, onSearchAgain, formatDateTime }) =>
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
         </svg>
       </div>
-      
+
       <div className="item-content">
         <div className="query-text">{item.query}</div>
         <div className="item-meta">

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import ProductCard from './ProductCard';
+import API_BASE_URL from '../config';
 import './SimilarProducts.css';
 
 /**
@@ -26,7 +27,7 @@ const SimilarProducts = ({ productId, productName }) => {
       setError('');
 
       const response = await fetch(
-        `http://localhost:8000/recommendations/similar/${productId}?limit=${limit}`,
+        `${API_BASE_URL}/recommendations/similar/${productId}?limit=${limit}`,
         {
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -50,7 +51,7 @@ const SimilarProducts = ({ productId, productName }) => {
 
   const handleAddToWishlist = async (product) => {
     try {
-      const response = await fetch('http://localhost:8000/preferences/wishlist', {
+      const response = await fetch(`${API_BASE_URL}/preferences/wishlist`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -123,8 +124,8 @@ const SimilarProducts = ({ productId, productName }) => {
           <h3>🔗 Similar Products</h3>
           {productName && <p className="widget-subtitle">Similar to "{productName}"</p>}
         </div>
-        <select 
-          value={limit} 
+        <select
+          value={limit}
           onChange={(e) => setLimit(parseInt(e.target.value))}
           className="limit-select"
         >

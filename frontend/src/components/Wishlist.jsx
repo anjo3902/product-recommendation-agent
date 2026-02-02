@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import ProductCard from './ProductCard';
 import ProductDetailsModal from './ProductDetailsModal';
+import API_BASE_URL from '../config';
 import './Wishlist.css';
 
 const Wishlist = () => {
@@ -15,7 +16,7 @@ const Wishlist = () => {
   const [stats, setStats] = useState(null);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
-  const API_BASE_URL = 'http://localhost:8000';
+
 
   // Fetch wishlist items
   useEffect(() => {

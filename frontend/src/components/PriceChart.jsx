@@ -16,6 +16,7 @@ import {
 } from 'chart.js';
 import annotationPlugin from 'chartjs-plugin-annotation';
 import axios from 'axios';
+import API_BASE_URL from '../config';
 import './PriceChart.css';
 
 // Register Chart.js components
@@ -46,7 +47,7 @@ const PriceChart = ({ productId, days = 90 }) => {
 
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/price/chart/${productId}?days=${days}`
+        `${API_BASE_URL}/api/price/chart/${productId}?days=${days}`
       );
 
       if (response.data.success) {
@@ -226,8 +227,8 @@ const PriceChart = ({ productId, days = 90 }) => {
         <div className="zones-grid">
           {priceZones.map((zone, index) => (
             <div key={index} className="zone-item">
-              <span 
-                className="zone-color" 
+              <span
+                className="zone-color"
                 style={{ backgroundColor: zone.color, borderColor: zone.borderColor }}
               ></span>
               <span className="zone-name">{zone.name}</span>
