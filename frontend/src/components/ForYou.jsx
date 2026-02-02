@@ -42,6 +42,11 @@ const ForYou = () => {
       if (!response.ok) {
         const contentType = response.headers.get('content-type');
         if (contentType && contentType.includes('text/html')) {
+          // Check if it's ngrok warning page
+          const text = await response.text();
+          if (text.includes('ngrok') || text.includes('tunnel')) {
+            throw new Error(`NGROK_BLOCKED:${API_BASE_URL}`);
+          }
           throw new Error('Unable to connect to server. Please check if backend is running.');
         }
         throw new Error('Failed to fetch recommendations');
@@ -55,7 +60,10 @@ const ForYou = () => {
       const data = await response.json();
       setRecommendations(data);
     } catch (err) {
-      if (err.name === 'SyntaxError') {
+      if (err.message && err.message.startsWith('NGROK_BLOCKED:')) {
+        const ngrokUrl = err.message.split(':')[1] + ':' + err.message.split(':')[2];
+        setError(`ngrok_warning:${ngrokUrl}`);
+      } else if (err.name === 'SyntaxError') {
         setError('Connection error: Backend server is not responding correctly. Please ensure your laptop is on with Ollama, backend, and ngrok running.');
       } else {
         setError(err.message);
@@ -100,6 +108,35 @@ const ForYou = () => {
   }
 
   if (error) {
+    // Check if it's ngrok warning error
+    if (error.startsWith('ngrok_warning:')) {
+      const ngrokUrl = error.replace('ngrok_warning:', '');
+      return (
+        <div className="for-you-container">
+          <div className="error-state">
+            <div className="error-icon">🔧</div>
+            <h3>Backend Setup Required</h3>
+            <p>Your backend server is running but needs browser authentication.</p>
+            <div style={{ textAlign: 'left', maxWidth: '600px', margin: '20px auto', padding: '20px', background: '#f0f0f0', borderRadius: '8px' }}>
+              <h4>📋 Quick Fix (One-time setup):</h4>
+              <ol style={{ lineHeight: '1.8' }}>
+                <li>Open this link in a NEW TAB: <a href={`${ngrokUrl}/docs`} target="_blank" rel="noopener noreferrer" style={{ color: '#007bff', fontWeight: 'bold' }}>{ngrokUrl}/docs</a></li>
+                <li>Click "Visit Site" on the warning page</li>
+                <li>Come back to this tab</li>
+                <li>Click "Try Again" below</li>
+              </ol>
+              <p style={{ fontSize: '14px', color: '#666', marginTop: '10px' }}>
+                💡 <strong>Why?</strong> Your laptop uses ngrok to make the backend accessible. This is a one-time authentication.
+              </p>
+            </div>
+            <button className="btn btn-primary" onClick={fetchRecommendations}>
+              Try Again
+            </button>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className="for-you-container">
         <div className="error-state">
