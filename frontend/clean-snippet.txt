@@ -1,0 +1,35 @@
+﻿// CLEAN VERSION - Lines 256-290 (Replace the corrupted section with this)
+
+    const agentsWorked = [];
+    if (products.length > 0) agentsWorked.push('[SEARCH] Product Search');
+    if (products.some(p => p.review_analysis?.available)) agentsWorked.push('[REVIEWS] Review Analyzer');
+    if (products.some(p => p.price_tracking?.available || p.price_analysis?.available)) agentsWorked.push('[PRICE] Price Tracker');
+    if (comparison?.available) agentsWorked.push('[COMPARE] Comparison');
+    if (buyPlan?.available) agentsWorked.push('[PAYMENT] Buy Plan');
+    
+    let response = `\n`;
+    response += `\n`;
+    response += `           AI SHOPPING ASSISTANT RESULTS\n`;
+    response += `\n\n`;
+    
+    response += `>> Active Agents: $\{agentsWorked.join(', ')} ($\{agentsWorked.length}/5)\n\n`;
+    response += `\n\n`;
+    
+    // SECTION 1: PRODUCT SEARCH RESULTS
+    response += `\n[SEARCH RESULTS] $\{products.length} Products Found\n`;
+    response += `\n\n`;
+    
+    products.forEach((product, index) => {
+      response += `$\{index + 1}. $\{product.name}\n`;
+      response += `   |-- Price: Rs.$\{product.pricing?.current_price || product.price}`;
+      if (product.pricing?.you_save > 0) {
+        response += ` (Save Rs.$\{Math.round(product.pricing.you_save)} - $\{product.pricing.discount_percent}% OFF)`;
+      }
+      response += `\n`;
+      response += `   |-- Rating: $\{product.ratings?.average_rating || product.rating}/5 $\{product.ratings?.rating_badge || ''}\n`;
+      response += `   |-- Reviews: $\{product.ratings?.total_reviews || 0} customers\n`;
+      response += `   |__ Brand: $\{product.brand || 'Unknown'}\n\n`;
+    });
+    
+    response += `\n\n`;
+

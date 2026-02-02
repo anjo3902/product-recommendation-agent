@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Recommendation - Chart & Table Demo</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .card-title {
+            font-size: 1.8em;
+            color: #667eea;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        .status {
+            padding: 10px 20px;
+            background: #10b981;
+            color: white;
+            border-radius: 8px;
+            display: inline-block;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        
+        .loading {
+            background: #f59e0b;
+        }
+        
+        .error {
+            background: #ef4444;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        th {
+            background: #f3f4f6;
+            font-weight: bold;
+            color: #374151;
+        }
+        
+        tr:hover {
+            background: #f9fafb;
+        }
+        
+        .price {
+            font-weight: bold;
+            color: #10b981;
+            font-size: 1.1em;
+        }
+        
+        .rating {
+            color: #f59e0b;
+        }
+        
+        .badge {
+            padding: 5px 12px;
+            border-radius: 5px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+        
+        .badge-success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .badge-primary {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        
+        .badge-danger {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        .winners {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .winner-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .winner-title {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+        
+        .winner-product {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin: 20px 0;
+        }
+        
+        .markers {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .marker {
+            background: #f9fafb;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .marker-label {
+            font-size: 0.9em;
+            color: #6b7280;
+            margin-bottom: 5px;
+        }
+        
+        .marker-value {
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+        
+        .marker-current { border-left: 4px solid #ef4444; }
+        .marker-lowest { border-left: 4px solid #22c55e; }
+        .marker-highest { border-left: 4px solid #f59e0b; }
+        
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            margin: 10px 5px;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Product Recommendation - Chart & Table Demo</h1>
+        
+        <!-- Chart Section -->
+        <div class="card">
+            <h2 class="card-title">📈 Price Tracking Chart</h2>
+            <div id="chartStatus" class="status loading">Loading chart data...</div>
+            
+            <div class="chart-container">
+                <canvas id="priceChart"></canvas>
+            </div>
+            
+            <div class="markers" id="priceMarkers" style="display: none;">
+                <div class="marker marker-current">
+                    <div class="marker-label">🔴 Current Price</div>
+                    <div class="marker-value" id="currentPrice">-</div>
+                </div>
+                <div class="marker marker-lowest">
+                    <div class="marker-label">🟢 Lowest Price</div>
+                    <div class="marker-value" id="lowestPrice">-</div>
+                </div>
+                <div class="marker marker-highest">
+                    <div class="marker-label">🟠 Highest Price</div>
+                    <div class="marker-value" id="highestPrice">-</div>
+                </div>
+            </div>
+            
+            <button onclick="loadChart()">🔄 Reload Chart</button>
+        </div>
+        
+        <!-- Table Section -->
+        <div class="card">
+            <h2 class="card-title">📋 Product Comparison Table</h2>
+            <div id="tableStatus" class="status loading">Loading comparison data...</div>
+            
+            <div class="winners" id="winnersSection" style="display: none;">
+                <div class="winner-card">
+                    <div class="winner-title">💰 Best Price</div>
+                    <div class="winner-product" id="bestPrice">-</div>
+                </div>
+                <div class="winner-card">
+                    <div class="winner-title">⭐ Best Rating</div>
+                    <div class="winner-product" id="bestRating">-</div>
+                </div>
+                <div class="winner-card">
+                    <div class="winner-title">🎯 Best Value</div>
+                    <div class="winner-product" id="bestValue">-</div>
+                </div>
+            </div>
+            
+            <table id="comparisonTable">
+                <thead id="tableHeader"></thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+            
+            <button onclick="loadTable()">🔄 Reload Table</button>
+        </div>
+        
+        <!-- Instructions -->
+        <div class="card">
+            <h2 class="card-title">ℹ️ Instructions</h2>
+            <p style="line-height: 1.8;">
+                <strong>To see this demo work:</strong><br><br>
+                1. Start your backend server: <code>uvicorn main:app --reload</code><br>
+                2. Make sure it's running on <code>http://localhost:8000</code><br>
+                3. Open this HTML file in your browser<br>
+                4. Charts and tables will load automatically!<br><br>
+                
+                <strong>Data Sources:</strong><br>
+                • Chart: <code>GET /api/price-tracker/analyze/1</code><br>
+                • Table: <code>POST /api/orchestrator/recommend</code><br><br>
+                
+                <strong>See full documentation:</strong><br>
+                📚 FRONTEND_VISUALIZATION_GUIDE.md
+            </p>
+        </div>
+    </div>
+    
+    <script>
+        let chartInstance = null;
+        
+        // Load price chart
+        async function loadChart() {
+            const statusEl = document.getElementById('chartStatus');
+            statusEl.className = 'status loading';
+            statusEl.textContent = 'Loading chart data...';
+            
+            try {
+                const response = await fetch('http://localhost:8000/api/price-tracker/analyze/1');
+                const data = await response.json();
+                
+                if (!data.success) {
+                    throw new Error(data.error || 'Failed to load chart data');
+                }
+                
+                const chartData = data.price_data.chart_data;
+                const markers = chartData.markers;
+                
+                // Update price markers
+                document.getElementById('currentPrice').textContent = 
+                    `₹${markers.current_price.value.toLocaleString('en-IN', {maximumFractionDigits: 2})}`;
+                document.getElementById('lowestPrice').textContent = 
+                    `₹${markers.lowest_price.value.toLocaleString('en-IN', {maximumFractionDigits: 2})}`;
+                document.getElementById('highestPrice').textContent = 
+                    `₹${markers.highest_price.value.toLocaleString('en-IN', {maximumFractionDigits: 2})}`;
+                
+                document.getElementById('priceMarkers').style.display = 'grid';
+                
+                // Destroy existing chart
+                if (chartInstance) {
+                    chartInstance.destroy();
+                }
+                
+                // Create chart
+                const ctx = document.getElementById('priceChart').getContext('2d');
+                chartInstance = new Chart(ctx, {
+                    type: chartData.type,
+                    data: {
+                        labels: chartData.labels,
+                        datasets: chartData.datasets
+                    },
+                    options: chartData.options
+                });
+                
+                statusEl.className = 'status';
+                statusEl.textContent = `✅ Chart loaded! ${chartData.labels.length} data points`;
+                
+            } catch (error) {
+                statusEl.className = 'status error';
+                statusEl.textContent = `❌ Error: ${error.message}`;
+                console.error('Chart error:', error);
+            }
+        }
+        
+        // Load comparison table
+        async function loadTable() {
+            const statusEl = document.getElementById('tableStatus');
+            statusEl.className = 'status loading';
+            statusEl.textContent = 'Loading comparison data...';
+            
+            try {
+                const response = await fetch('http://localhost:8000/api/orchestrator/recommend', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        query: "wireless headphones",
+                        top_n: 3
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (!data.success) {
+                    throw new Error(data.error || 'Failed to load table data');
+                }
+                
+                const tableData = data.comparison.frontend_table;
+                
+                // Update winners
+                const winners = tableData.winners;
+                document.getElementById('bestPrice').textContent = winners.best_price.product;
+                document.getElementById('bestRating').textContent = winners.best_rating.product;
+                document.getElementById('bestValue').textContent = winners.best_value.product;
+                document.getElementById('winnersSection').style.display = 'grid';
+                
+                // Build table header
+                const headerRow = document.getElementById('tableHeader');
+                headerRow.innerHTML = '';
+                const tr = document.createElement('tr');
+                tableData.columns.forEach(col => {
+                    const th = document.createElement('th');
+                    th.textContent = col.label;
+                    tr.appendChild(th);
+                });
+                headerRow.appendChild(tr);
+                
+                // Build table body
+                const tbody = document.getElementById('tableBody');
+                tbody.innerHTML = '';
+                tableData.rows.forEach(row => {
+                    const tr = document.createElement('tr');
+                    
+                    // Attribute column
+                    const attrCell = document.createElement('td');
+                    attrCell.innerHTML = `<strong>${row.attribute}</strong>`;
+                    tr.appendChild(attrCell);
+                    
+                    // Product columns
+                    tableData.columns.slice(1).forEach(col => {
+                        const td = document.createElement('td');
+                        const cellData = row[col.key];
+                        
+                        if (cellData.style === 'currency') {
+                            td.innerHTML = `<span class="price">${cellData.value}</span>`;
+                        } else if (cellData.style === 'rating') {
+                            td.innerHTML = `<span class="rating">⭐ ${cellData.value}</span>`;
+                        } else if (cellData.style === 'badge') {
+                            const badgeClass = cellData.color === 'green' ? 'badge-success' : 
+                                              cellData.color === 'red' ? 'badge-danger' : 'badge-primary';
+                            td.innerHTML = `<span class="badge ${badgeClass}">${cellData.value}</span>`;
+                        } else if (cellData.style === 'status') {
+                            const badgeClass = cellData.raw ? 'badge-success' : 'badge-danger';
+                            td.innerHTML = `<span class="badge ${badgeClass}">${cellData.value}</span>`;
+                        } else {
+                            td.textContent = cellData.value;
+                        }
+                        
+                        tr.appendChild(td);
+                    });
+                    
+                    tbody.appendChild(tr);
+                });
+                
+                statusEl.className = 'status';
+                statusEl.textContent = `✅ Table loaded! ${tableData.rows.length} attributes compared`;
+                
+            } catch (error) {
+                statusEl.className = 'status error';
+                statusEl.textContent = `❌ Error: ${error.message}`;
+                console.error('Table error:', error);
+            }
+        }
+        
+        // Load both on page load
+        window.onload = function() {
+            loadChart();
+            loadTable();
+        };
+    </script>
+</body>
+</html>
