@@ -17,6 +17,7 @@ const SearchHistory = () => {
   useEffect(() => {
     fetchSearchHistory();
     fetchStats();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchSearchHistory = async () => {
