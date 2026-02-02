@@ -22,6 +22,7 @@ const Wishlist = () => {
   useEffect(() => {
     fetchWishlist();
     fetchStats();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchWishlist = async () => {
@@ -129,19 +130,9 @@ const Wishlist = () => {
     }
   };
 
-  const handleCancelEdit = () => {
-    setEditingNote(null);
-    setNoteText('');
-  };
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    });
-  };
+
+
 
   if (loading) {
     return (
