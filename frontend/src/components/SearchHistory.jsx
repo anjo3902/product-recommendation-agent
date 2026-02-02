@@ -15,12 +15,22 @@ const SearchHistory = () => {
 
   // Fetch search history
   useEffect(() => {
-    fetchSearchHistory();
-    fetchStats();
+    if (token) {
+      fetchSearchHistory();
+      fetchStats();
+    } else {
+      setLoading(false);
+      setError('Please log in to view your search history');
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [token]);
 
   const fetchSearchHistory = async () => {
+    if (!token) {
+      setError('Please log in to view your search history');
+      return;
+    }
+
     try {
       setLoading(true);
       setError('');

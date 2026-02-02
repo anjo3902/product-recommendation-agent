@@ -15,11 +15,21 @@ const ForYou = () => {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    fetchRecommendations();
+    if (token) {
+      fetchRecommendations();
+    } else {
+      setLoading(false);
+      setError('Please log in to see personalized recommendations');
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [token]);
 
   const fetchRecommendations = async () => {
+    if (!token) {
+      setError('Please log in to see personalized recommendations');
+      return;
+    }
+
     try {
       setLoading(true);
       setError('');

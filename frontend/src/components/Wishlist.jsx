@@ -20,12 +20,22 @@ const Wishlist = () => {
 
   // Fetch wishlist items
   useEffect(() => {
-    fetchWishlist();
-    fetchStats();
+    if (token) {
+      fetchWishlist();
+      fetchStats();
+    } else {
+      setLoading(false);
+      setError('Please log in to view your wishlist');
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [token]);
 
   const fetchWishlist = async () => {
+    if (!token) {
+      setError('Please log in to view your wishlist');
+      return;
+    }
+
     try {
       setLoading(true);
       setError('');
