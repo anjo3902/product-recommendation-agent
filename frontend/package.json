@@ -1,6 +1,6 @@
 {
   "name": "product-recommendation-frontend",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Frontend for Product Recommendation System with Authentication",
   "private": true,
   "dependencies": {
