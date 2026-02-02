@@ -1,4 +1,4 @@
-/* eslint-disable react-hooks/exhaustive-deps */
+﻿/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import ProductCard from './ProductCard';
@@ -272,14 +272,14 @@ const ConversationAgent = () => {
     }
 
     if (lowerMessage.includes('help')) {
-      return `[AI] I'm here to help! I can:\n\n* Search for products\n* Compare multiple items\n* Analyze reviews and ratings\n* Track price trends\n* Recommend the best payment options\n\nJust tell me what product you're interested in!`;
+      return `🤖 I'm here to help! I can:\n\n* Search for products\n* Compare multiple items\n* Analyze reviews and ratings\n* Track price trends\n* Recommend the best payment options\n\nJust tell me what product you're interested in!`;
     }
 
     if (lowerMessage.includes('thank')) {
       return `You're welcome! Let me know if you need anything else!`;
     }
 
-    return `I'm your product recommendation assistant. To help you better, please tell me what product you're looking for. For example:\n\n* "Find gaming laptops under ₹80000"\n* "Show me wireless headphones"\n* "Compare iPhone 14 and Samsung S23"`;
+    return `I'm your product recommendation assistant. To help you better, please tell me what product you're looking for. For example:\n\n* "Find gaming laptops under â‚¹80000"\n* "Show me wireless headphones"\n* "Compare iPhone 14 and Samsung S23"`;
   };
 
   const detectIntent = (message) => {
@@ -340,9 +340,9 @@ const ConversationAgent = () => {
   const getIntentIcon = (intent) => {
     const icons = {
       search: '[Search]',
-      buy_plan: '[Buy]',
+      buy_plan: '🛒',
       compare: '[Compare]',
-      recommendation: '[*]',
+      recommendation: '⭐',
       general: '[Chat]',
       processing: '[...]',
     };
@@ -363,7 +363,7 @@ const ConversationAgent = () => {
       {/* Header */}
       <div className="agent-header">
         <div className="header-content">
-          <h1>[AI] AI Shopping Assistant</h1>
+          <h1>🤖 AI Shopping Assistant</h1>
           <p>Chat with our intelligent agent for personalized shopping help</p>
         </div>
         {summary && (
@@ -381,7 +381,7 @@ const ConversationAgent = () => {
               className="summary-stat clickable"
               onClick={() => {
                 generateSessionId();
-                alert('✨ New session started!');
+                alert('âœ¨ New session started!');
               }}
               title="Click to start a new session"
               style={{ cursor: 'pointer' }}
@@ -400,16 +400,16 @@ const ConversationAgent = () => {
           <div className="agent-activity-bar">
             <div className="activity-header">
               <div className="pulse-indicator"></div>
-              <span>[AI] Agents Working...</span>
+              <span>🤖 Agents Working...</span>
             </div>
             <div className="active-agents">
               {activeAgents.map((agent, i) => (
                 <div key={i} className="agent-chip">
                   {agent === 'Search' && '[?]'}
-                  {agent === 'Review' && '[*]'}
-                  {agent === 'Price' && '[$]'}
-                  {agent === 'Comparison' && '[vs]'}
-                  {agent === 'BuyPlan' && '[Buy]'}
+                  {agent === 'Review' && '⭐'}
+                  {agent === 'Price' && '💰'}
+                  {agent === 'Comparison' && '⚖️'}
+                  {agent === 'BuyPlan' && '🛒'}
                   {' '}{agent}
                 </div>
               ))}
@@ -421,33 +421,33 @@ const ConversationAgent = () => {
         <div className="messages-container">
           {conversations.length === 0 ? (
             <div className="welcome-message">
-              <div className="welcome-icon">[AI]</div>
+              <div className="welcome-icon">🤖</div>
               <h2>AI-Powered Shopping Assistant</h2>
               <p className="welcome-subtitle">Powered by 5 Specialized AI Agents</p>
 
               <div className="agent-features">
                 <div className="feature-card">
-                  <div className="feature-icon">[S]</div>
+                  <div className="feature-icon">🔍</div>
                   <div className="feature-name">Product Search</div>
                   <div className="feature-desc">Find products matching your needs</div>
                 </div>
                 <div className="feature-card">
-                  <div className="feature-icon">[*]</div>
+                  <div className="feature-icon">⭐</div>
                   <div className="feature-name">Review Analysis</div>
                   <div className="feature-desc">Analyze customer reviews & ratings</div>
                 </div>
                 <div className="feature-card">
-                  <div className="feature-icon">[$]</div>
+                  <div className="feature-icon">💰</div>
                   <div className="feature-name">Price Tracking</div>
                   <div className="feature-desc">Track price trends & best deals</div>
                 </div>
                 <div className="feature-card">
-                  <div className="feature-icon">[vs]</div>
+                  <div className="feature-icon">⚖️</div>
                   <div className="feature-name">Comparison</div>
                   <div className="feature-desc">Compare products side-by-side</div>
                 </div>
                 <div className="feature-card">
-                  <div className="feature-icon">[Buy]</div>
+                  <div className="feature-icon">🛒</div>
                   <div className="feature-name">Buy Plan</div>
                   <div className="feature-desc">Best payment & savings options</div>
                 </div>
@@ -457,9 +457,9 @@ const ConversationAgent = () => {
                 <h3>Try asking:</h3>
                 <button
                   className="example-query"
-                  onClick={() => setCurrentMessage("Find gaming laptops under ₹80000")}
+                  onClick={() => setCurrentMessage("Find gaming laptops under â‚¹80000")}
                 >
-                  "Find gaming laptops under ₹80000"
+                  "Find gaming laptops under â‚¹80000"
                 </button>
                 <button
                   className="example-query"
@@ -481,7 +481,7 @@ const ConversationAgent = () => {
                 <div key={conv.id || index} className="conversation-pair">
                   {/* User Message */}
                   <div className="message user-message">
-                    <div className="message-avatar">[User]</div>
+                    <div className="message-avatar">👤</div>
                     <div className="message-content">
                       <div className="message-text">{conv.user_message}</div>
                       <div className="message-meta">
@@ -492,7 +492,7 @@ const ConversationAgent = () => {
 
                   {/* Agent Response */}
                   <div className="message agent-message">
-                    <div className="message-avatar">[AI]</div>
+                    <div className="message-avatar">🤖</div>
                     <div className="message-content">
                       {conv.isLoading ? (
                         <div className="agent-loading">
@@ -573,7 +573,7 @@ const ConversationAgent = () => {
                           {/* Comparison Table */}
                           {conv.orchestratorData?.comparison?.available && conv.orchestratorData.comparison.full_comparison?.products && (
                             <div className="message-comparison-table">
-                              <h4>[vs] Battle-Style Comparison:</h4>
+                              <h4>⚖️ Battle-Style Comparison:</h4>
                               <div className="comparison-table-container">
                                 <table className="battle-comparison-table">
                                   <thead>
@@ -591,7 +591,7 @@ const ConversationAgent = () => {
                                   </thead>
                                   <tbody>
                                     <tr>
-                                      <td className="feature-name">[$] Price</td>
+                                      <td className="feature-name">💰 Price</td>
                                       {conv.orchestratorData.comparison.full_comparison.products.map((product) => (
                                         <td key={product.product_id} className={product.product_id === conv.orchestratorData.comparison.category_winners?.best_price?.product_id ? 'winner-cell' : ''}>
                                           Rs.{product.price}
@@ -600,7 +600,7 @@ const ConversationAgent = () => {
                                       ))}
                                     </tr>
                                     <tr>
-                                      <td className="feature-name">[*] Rating</td>
+                                      <td className="feature-name">⭐ Rating</td>
                                       {conv.orchestratorData.comparison.full_comparison.products.map((product) => (
                                         <td key={product.product_id} className={product.product_id === conv.orchestratorData.comparison.category_winners?.best_rating?.product_id ? 'winner-cell' : ''}>
                                           {product.rating}/5
