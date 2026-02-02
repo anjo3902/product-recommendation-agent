@@ -40,13 +40,26 @@ const ForYou = () => {
       });
 
       if (!response.ok) {
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('text/html')) {
+          throw new Error('Unable to connect to server. Please check if backend is running.');
+        }
         throw new Error('Failed to fetch recommendations');
+      }
+
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        throw new Error('Server returned invalid response. Backend may be offline.');
       }
 
       const data = await response.json();
       setRecommendations(data);
     } catch (err) {
-      setError(err.message);
+      if (err.name === 'SyntaxError') {
+        setError('Connection error: Backend server is not responding correctly. Please ensure your laptop is on with Ollama, backend, and ngrok running.');
+      } else {
+        setError(err.message);
+      }
       console.error('Error fetching recommendations:', err);
     } finally {
       setLoading(false);
