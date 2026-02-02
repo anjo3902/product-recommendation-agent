@@ -32,9 +32,16 @@ app = FastAPI(
 )
 
 # Configure CORS
+cors_origins = os.getenv("CORS_ORIGINS", "http://localhost:3000").split(",")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Update this for production
+    allow_origins=[
+        "http://localhost:3000",
+        "https://*.vercel.app",  # Vercel deployments
+        "https://*.ngrok-free.app",  # ngrok free tier
+        "https://*.ngrok.io",  # ngrok legacy
+        "*"  # Allow all for development (remove in production if needed)
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -132,11 +139,14 @@ async def root():
 
 @app.get("/health")
 async def health_check():
-    """Health check endpoint"""
+    """Health check endpoint for deployment platforms"""
+    from datetime import datetime
     return {
         "status": "healthy",
+        "timestamp": datetime.now().isoformat(),
         "database": "connected",
-        "gemini_api": "configured" if os.getenv("GEMINI_API_KEY") else "not configured"
+        "llm": "configured" if (os.getenv("OPENAI_API_KEY") or os.getenv("USE_OLLAMA")) else "not configured",
+        "environment": os.getenv("ENVIRONMENT", "development")
     }
 
 
