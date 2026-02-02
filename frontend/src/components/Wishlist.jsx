@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import ProductCard from './ProductCard';
 import ProductDetailsModal from './ProductDetailsModal';
 import API_BASE_URL from '../config';
+import { getApiHeaders } from '../utils/api';
 import './Wishlist.css';
 
 const Wishlist = () => {
@@ -42,10 +43,7 @@ const Wishlist = () => {
 
       const response = await fetch(`${API_BASE_URL}/preferences/wishlist`, {
         method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
+        headers: getApiHeaders(token)
       });
 
       if (!response.ok) {

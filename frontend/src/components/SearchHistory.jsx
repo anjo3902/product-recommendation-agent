@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import API_BASE_URL from '../config';
+import { getApiHeaders } from '../utils/api';
 import './SearchHistory.css';
 
 const SearchHistory = () => {
@@ -37,10 +38,7 @@ const SearchHistory = () => {
 
       const response = await fetch(`${API_BASE_URL}/preferences/search-history`, {
         method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
+        headers: getApiHeaders(token)
       });
 
       if (!response.ok) {

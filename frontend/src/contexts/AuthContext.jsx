@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import API_BASE_URL from '../config';
+import { getApiHeaders } from '../utils/api';
 
 // Create Auth Context
 const AuthContext = createContext(null);
@@ -48,9 +49,7 @@ export const AuthProvider = ({ children }) => {
       const timeoutId = setTimeout(() => controller.abort(), 3000); // 3 second timeout
 
       const response = await fetch(`${API_BASE_URL}/auth/me`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
+        headers: getApiHeaders(token),
         signal: controller.signal
       });
 
@@ -83,9 +82,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: getApiHeaders(null, { 'Content-Type': 'application/json' }),
         body: JSON.stringify({ email, password })
       });
 
@@ -118,9 +115,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await fetch(`${API_BASE_URL}/auth/signup`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: getApiHeaders(null, { 'Content-Type': 'application/json' }),
         body: JSON.stringify({
           email,
           username,

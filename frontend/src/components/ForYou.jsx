@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import ProductCard from './ProductCard';
 import API_BASE_URL from '../config';
+import { getApiHeaders } from '../utils/api';
 import './ForYou.css';
 
 /**
@@ -35,9 +36,7 @@ const ForYou = () => {
       setError('');
 
       const response = await fetch(`${API_BASE_URL}/recommendations/for-you`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
+        headers: getApiHeaders(token),
       });
 
       if (!response.ok) {
@@ -58,10 +57,7 @@ const ForYou = () => {
     try {
       const response = await fetch(`${API_BASE_URL}/preferences/wishlist`, {
         method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
+        headers: getApiHeaders(token, { 'Content-Type': 'application/json' }),
         body: JSON.stringify({ product_id: product.id }),
       });
 
