@@ -279,7 +279,7 @@ const ConversationAgent = () => {
       return `You're welcome! Let me know if you need anything else!`;
     }
 
-    return `I'm your product recommendation assistant. To help you better, please tell me what product you're looking for. For example:\n\n* "Find gaming laptops under â‚¹80000"\n* "Show me wireless headphones"\n* "Compare iPhone 14 and Samsung S23"`;
+    return `I'm your product recommendation assistant. To help you better, please tell me what product you're looking for. For example:\n\n* "Find gaming laptops under â‚¹80000"\n* "Show me wireless headphones under ₹5000"\n* "Compare iPhone 14 and Samsung S23"`;
   };
 
   const detectIntent = (message) => {
@@ -463,15 +463,15 @@ const ConversationAgent = () => {
                 </button>
                 <button
                   className="example-query"
-                  onClick={() => setCurrentMessage("Show me wireless headphones")}
+                  onClick={() => setCurrentMessage("Show me wireless headphones under ₹5000")}
                 >
-                  "Show me wireless headphones"
+                  "Show me wireless headphones under ₹5000"
                 </button>
                 <button
                   className="example-query"
-                  onClick={() => setCurrentMessage("Compare best smartphones")}
+                  onClick={() => setCurrentMessage("Compare iPhone 15 vs Samsung S24")}
                 >
-                  "Compare best smartphones"
+                  "Compare iPhone 15 vs Samsung S24"
                 </button>
               </div>
             </div>
@@ -682,10 +682,10 @@ const ConversationAgent = () => {
 
           <div className="input-actions">
             <button className="action-btn" onClick={handleClearConversations}>
-              [Clear] Clear History
+              🗑️ Clear History
             </button>
             <button className="action-btn" onClick={generateSessionId}>
-              [New] New Session
+              ✨ New Session
             </button>
           </div>
         </div>
