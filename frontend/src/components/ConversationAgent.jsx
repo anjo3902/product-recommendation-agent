@@ -573,7 +573,7 @@ const ConversationAgent = () => {
                           {/* Comparison Table */}
                           {conv.orchestratorData?.comparison?.available && conv.orchestratorData.comparison.full_comparison?.products && (
                             <div className="message-comparison-table">
-                              <h4>⚖️ Battle-Style Comparison:</h4>
+                              <h4>⚖️ Detailed Product Comparison</h4>
                               <div className="comparison-table-container">
                                 <table className="battle-comparison-table">
                                   <thead>
@@ -595,7 +595,7 @@ const ConversationAgent = () => {
                                       {conv.orchestratorData.comparison.full_comparison.products.map((product) => (
                                         <td key={product.product_id} className={product.product_id === conv.orchestratorData.comparison.category_winners?.best_price?.product_id ? 'winner-cell' : ''}>
                                           Rs.{product.price}
-                                          {product.product_id === conv.orchestratorData.comparison.category_winners?.best_price?.product_id && ' [V]'}
+                                          {product.product_id === conv.orchestratorData.comparison.category_winners?.best_price?.product_id && ' ✓'}
                                         </td>
                                       ))}
                                     </tr>
@@ -604,24 +604,24 @@ const ConversationAgent = () => {
                                       {conv.orchestratorData.comparison.full_comparison.products.map((product) => (
                                         <td key={product.product_id} className={product.product_id === conv.orchestratorData.comparison.category_winners?.best_rating?.product_id ? 'winner-cell' : ''}>
                                           {product.rating}/5
-                                          {product.product_id === conv.orchestratorData.comparison.category_winners?.best_rating?.product_id && ' [V]'}
+                                          {product.product_id === conv.orchestratorData.comparison.category_winners?.best_rating?.product_id && ' ✓'}
                                         </td>
                                       ))}
                                     </tr>
                                     <tr>
-                                      <td className="feature-name">[#] Value Score</td>
+                                      <td className="feature-name">📊 Value Score</td>
                                       {conv.orchestratorData.comparison.full_comparison.products.map((product) => (
                                         <td key={product.product_id} className={product.product_id === conv.orchestratorData.comparison.category_winners?.best_value?.product_id ? 'winner-cell' : ''}>
                                           {product.value_score ? `${(product.value_score * 100).toFixed(0)}%` : 'N/A'}
-                                          {product.product_id === conv.orchestratorData.comparison.category_winners?.best_value?.product_id && ' [V]'}
+                                          {product.product_id === conv.orchestratorData.comparison.category_winners?.best_value?.product_id && ' ✓'}
                                         </td>
                                       ))}
                                     </tr>
                                     <tr>
-                                      <td className="feature-name">[Box] Stock</td>
+                                      <td className="feature-name">📦 Stock Status</td>
                                       {conv.orchestratorData.comparison.full_comparison.products.map((product) => (
                                         <td key={product.product_id}>
-                                          {product.in_stock ? '[YES] In Stock' : '[NO] Out of Stock'}
+                                          {product.in_stock ? '✓ In Stock' : '✗ Out of Stock'}
                                         </td>
                                       ))}
                                     </tr>
