@@ -252,7 +252,9 @@ async def signup(
             "id": new_user.id,
             "email": new_user.email,
             "username": new_user.username,
-            "full_name": new_user.full_name
+            "full_name": new_user.full_name,
+            "created_at": new_user.created_at,
+            "last_login": new_user.last_login
         }
     )
 
@@ -321,7 +323,9 @@ async def login(
             "id": user.id,
             "email": user.email,
             "username": user.username,
-            "full_name": user.full_name
+            "full_name": user.full_name,
+            "created_at": user.created_at,
+            "last_login": user.last_login
         }
     )
 
