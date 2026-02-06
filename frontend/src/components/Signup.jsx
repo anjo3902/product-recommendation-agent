@@ -286,12 +286,15 @@ const Signup = ({ onSwitchToLogin, onSignupSuccess }) => {
           {/* Submit Button */}
           <button
             type="submit"
-            className="btn btn-primary"
+            className={`btn btn-primary ${loading ? 'loading' : ''}`}
             disabled={loading}
           >
             {loading ? (
-              <span className="loading-spinner">
-                <span className="spinner"></span> Creating account...
+              <span className="btn-loading">
+                <svg className="spinner-svg" viewBox="0 0 50 50">
+                  <circle className="path" cx="25" cy="25" r="20" fill="none" strokeWidth="4"></circle>
+                </svg>
+                <span>Creating account...</span>
               </span>
             ) : (
               'Create Account'
