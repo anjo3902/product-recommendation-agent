@@ -154,20 +154,27 @@ const Wishlist = () => {
   }
 
   // Helper to map wishlist item to product structure
-  const mapItemToProduct = (item) => ({
-    id: item.product_id || item.id,
-    name: item.product_name,
-    brand: item.brand || 'Brand', // Fallback if missing
-    price: item.product_price,
-    original_price: item.original_price,
-    rating: item.product_rating,
-    image_url: item.product_image,
-    category: item.category,
-    subcategory: item.subcategory,
-    description: item.description,
-    specifications: item.specifications,
-    in_stock: item.in_stock !== false // Default to true if missing
-  });
+  const mapItemToProduct = (item) => {
+    // Debug log to see what data we're getting
+    if (!item.category) {
+      console.log('Wishlist item missing category:', item);
+    }
+    
+    return {
+      id: item.product_id || item.id,
+      name: item.product_name || item.name,
+      brand: item.brand || 'Brand',
+      price: item.product_price || item.price,
+      original_price: item.original_price,
+      rating: item.product_rating || item.rating,
+      image_url: item.product_image || item.image_url,
+      category: item.category || 'Product',
+      subcategory: item.subcategory || item.product_subcategory,
+      description: item.description,
+      specifications: item.specifications,
+      in_stock: item.in_stock !== false
+    };
+  };
 
   // ... (keep handleRemoveItem, handleEditNote, etc.)
 
@@ -175,20 +182,27 @@ const Wishlist = () => {
 
   return (
     <div className="wishlist-container">
-      <div className="wishlist-header">
-        <h1>My Wishlist</h1>
+      {/* Hero Section */}
+      <div className="hero-section">
+        <div className="hero-content">
+          <h1>My Wishlist</h1>
+          <p>Your collection of favorite products</p>
+        </div>
         {stats && (
-          <div className="wishlist-stats">
-            <div className="stat-item">
-              <span className="stat-value">{stats.wishlist_count}</span>
-              <span className="stat-label">Items</span>
-            </div>
-            {stats.favorite_categories.length > 0 && (
-              <div className="stat-item">
-                <span className="stat-value">{stats.favorite_categories[0]}</span>
-                <span className="stat-label">Top Category</span>
+          <div className="insights-card">
+            <h3>Quick Stats</h3>
+            <div className="insights-grid">
+              <div className="insight-item">
+                <div className="insight-value">{stats.wishlist_count}</div>
+                <div className="insight-label">Saved Items</div>
               </div>
-            )}
+              {stats.favorite_categories.length > 0 && (
+                <div className="insight-item">
+                  <div className="insight-value">{stats.favorite_categories[0]}</div>
+                  <div className="insight-label">Top Category</div>
+                </div>
+              )}
+            </div>
           </div>
         )}
       </div>
@@ -200,14 +214,17 @@ const Wishlist = () => {
       )}
 
       {wishlistItems.length === 0 ? (
-        <div className="empty-wishlist">
-          <svg className="empty-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-          </svg>
+        <div className="empty-state">
+          <div className="empty-icon-wrapper">
+            <svg className="empty-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+          </div>
           <h2>Your wishlist is empty</h2>
-          <p>Start adding products you love!</p>
+          <p>Start adding products you love to see them here!</p>
         </div>
       ) : (
+        <div className="wishlist-section">
         <div className="wishlist-grid">
           {wishlistItems.map(item => {
             const product = mapItemToProduct(item);
@@ -285,9 +302,10 @@ const Wishlist = () => {
             );
           })}
         </div>
+        </div>
       )}
 
-      {stats && stats.favorite_categories.length > 0 && (
+      {stats && stats.favorite_categories.length > 0 && wishlistItems.length > 0 && (
         <div className="favorite-categories">
           <h3>Your Favorite Categories</h3>
           <div className="category-tags">

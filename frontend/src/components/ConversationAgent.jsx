@@ -398,7 +398,7 @@ const ConversationAgent = () => {
     const lowerMessage = message.toLowerCase();
 
     if (lowerMessage.includes('hello') || lowerMessage.includes('hi')) {
-      return `Hello ${user?.full_name || 'there'}! I'm your AI shopping assistant. I can help you find and compare products. Just describe what you're looking for!`;
+      return `Hello ${user?.full_name || 'there'}! I'm SmartBuy AI, your intelligent shopping assistant. I can help you find and compare products, track prices, and make smart buying decisions. Just describe what you're looking for!`;
     }
 
     if (lowerMessage.includes('help')) {
@@ -567,7 +567,7 @@ const ConversationAgent = () => {
       {/* Header */}
       <div className="agent-header">
         <div className="header-content">
-          <h1>AI Shopping Assistant</h1>
+          <h1>SmartBuy AI</h1>
           <p>Chat with our intelligent agent for personalized shopping help</p>
         </div>
         {summary && (
@@ -781,7 +781,14 @@ const ConversationAgent = () => {
                             return pd?.chart_data?.data?.length > 0;
                           }) && (
                               <div className="message-price-history-section">
-                                <h3 className="section-title">[Chart] Interactive Price History Analysis</h3>
+                                <h3 className="section-title">
+                                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: '8px', verticalAlign: 'middle'}}>
+                                    <line x1="18" y1="20" x2="18" y2="10"/>
+                                    <line x1="12" y1="20" x2="12" y2="4"/>
+                                    <line x1="6" y1="20" x2="6" y2="14"/>
+                                  </svg>
+                                  Interactive Price History Analysis
+                                </h3>
                                 {conv.orchestratorData.products.map((product) => {
                                   // Access price data - check both fields for backward compatibility
                                   const priceData = product.price_tracking || product.price_analysis;

@@ -137,6 +137,17 @@ const Signup = ({ onSwitchToLogin, onSignupSuccess }) => {
     <div className="signup-container">
       <div className="signup-card">
         <div className="signup-header">
+          <div className="brand-logo">
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="48" height="48" rx="12" fill="#4f46e5"/>
+              <path d="M14 24L20 30L34 16" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+              <circle cx="24" cy="24" r="18" stroke="white" strokeWidth="2" opacity="0.3"/>
+            </svg>
+            <div className="brand-text">
+              <h1>SmartBuy AI</h1>
+              <span>Intelligent Shopping Assistant</span>
+            </div>
+          </div>
           <h2>Create Account</h2>
           <p>Sign up to get started</p>
         </div>

@@ -33,6 +33,8 @@ class WishlistItemResponse(BaseModel):
     product_image: Optional[str] = None
     product_rating: Optional[float] = None
     in_stock: Optional[bool] = None
+    category: Optional[str] = None
+    brand: Optional[str] = None
 
     class Config:
         from_attributes = True
@@ -154,7 +156,9 @@ async def get_wishlist(
             product_price=product.price if product else None,
             product_image=product.image_url if product else None,
             product_rating=product.rating if product else None,
-            in_stock=product.in_stock if product else None
+            in_stock=product.in_stock if product else None,
+            category=product.category if product else None,
+            brand=product.brand if product else None
         ))
     
     return response
