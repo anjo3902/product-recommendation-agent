@@ -1,4 +1,4 @@
-"""
+﻿"""
 Price Tracker Agent - AI-Powered Price Analysis
 
 This agent uses Ollama AI to:
@@ -36,9 +36,9 @@ class PriceTrackerAgent:
         # Test Ollama connection
         try:
             self.client.list()
-            print(f"✅ Price Tracker: Ollama connected! Using model: {self.model_name}")
+            print(f"[OK] Price Tracker: Ollama connected! Using model: {self.model_name}")
         except Exception as e:
-            print(f"⚠️  Ollama not running. Start with: ollama serve")
+            print(f"[WARN]  Ollama not running. Start with: ollama serve")
             print(f"   Error: {e}")
     
     async def analyze_price(
@@ -151,18 +151,18 @@ class PriceTrackerAgent:
 
 Analyze this price data for "{product_name}":
 
-📊 PRICE STATISTICS:
+[DATA] PRICE STATISTICS:
 - Current Price: ₹{trend_data.get('current_price', 0):,.0f}
 - Average Price (30 days): ₹{trend_data.get('average_price', 0):,.0f}
 - Lowest Price: ₹{trend_data.get('min_price', 0):,.0f}
 - Highest Price: ₹{trend_data.get('max_price', 0):,.0f}
 
-📈 TREND ANALYSIS:
+[TREND] TREND ANALYSIS:
 - Trend: {trend_data.get('trend', 'unknown').upper()}
 - Price Change: {trend_data.get('price_change_pct', 0):.1f}%
 - Data Points: {history_count} days
 
-🎯 SYSTEM RECOMMENDATION: {trend_data.get('recommendation', 'wait').upper()}
+[TARGET] SYSTEM RECOMMENDATION: {trend_data.get('recommendation', 'wait').upper()}
 
 Provide a recommendation in 2-3 sentences:
 1. Should the user BUY NOW or WAIT?
@@ -182,15 +182,16 @@ Keep it conversational and helpful. Start with your recommendation."""
                     model=self.model_name,
                     prompt=prompt,
                     options={
-                        'temperature': 0.7,
-                        'num_predict': 200
+                        'temperature': 0.6,  # Slightly lower for faster, more focused responses
+                        'num_predict': 120,  # Reduced from 200 - still sufficient for 2-3 sentences
+                        'top_p': 0.9  # Add nucleus sampling for better quality at lower tokens
                     }
                 )['response'].strip()
             
-            # Execute with timeout
+            # Execute with optimized timeout
             response_text = await asyncio.wait_for(
                 loop.run_in_executor(executor, _generate_sync),
-                timeout=25.0
+                timeout=15.0  # Reduced from 25s for faster UX
             )
             executor.shutdown(wait=False)
             
@@ -205,7 +206,7 @@ Keep it conversational and helpful. Start with your recommendation."""
             avg = trend_data.get('average_price', 0)
             
             if rec == 'buy_now':
-                return f"✅ BUY NOW! Price is at ₹{current:,.0f}, which is near the all-time low. This is an excellent time to purchase."
+                return f"[OK] BUY NOW! Price is at ₹{current:,.0f}, which is near the all-time low. This is an excellent time to purchase."
             elif rec == 'good_time':
                 return f"👍 GOOD DEAL! Current price (₹{current:,.0f}) is below the 30-day average (₹{avg:,.0f}). Fair time to buy."
             else:

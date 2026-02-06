@@ -64,9 +64,9 @@ class OrchestratorAgent:
         # Test Ollama connection
         try:
             self.client.list()
-            print(f"✅ Orchestrator: Ollama connected! Using model: {self.model_name}")
+            print(f"[OK] Orchestrator: Ollama connected! Using model: {self.model_name}")
         except Exception as e:
-            print(f"⚠️  Ollama not running. Start with: ollama serve")
+            print(f"[WARN] Ollama not running. Start with: ollama serve")
             print(f"   Error: {e}")
             self.client = None
     
@@ -155,6 +155,7 @@ class OrchestratorAgent:
                 buyplan_task = asyncio.create_task(self._create_buy_plan(top_product_id, user_preference))
                 
                 # Wait for all with overall timeout (sum of individual timeouts + buffer)
+                # AGENTIC AI OPTIMIZATION: Reduced from 120s to 70s for faster UX
                 results = await asyncio.wait_for(
                     asyncio.gather(
                         review_task,
@@ -163,7 +164,7 @@ class OrchestratorAgent:
                         buyplan_task,
                         return_exceptions=True
                     ),
-                    timeout=120.0  # 120s: Agents run in parallel, longest is ~40s + buffer
+                    timeout=70.0  # 70s: Optimized parallel execution (longest ~50s + buffer)
                 )
                 logger.info("✅ All agent tasks completed")
             except asyncio.TimeoutError:
@@ -227,10 +228,10 @@ class OrchestratorAgent:
         try:
             tasks = []
             for product_id in product_ids:
-                # AGENTIC AI: Realistic timeout for LLM-based review analysis
+                # AGENTIC AI OPTIMIZATION: Reduced timeout with optimized prompts
                 task = asyncio.wait_for(
                     review_analyzer_agent.analyze_reviews(product_id),
-                    timeout=60.0  # 60s: 50s LLM + 10s DB/processing buffer
+                    timeout=45.0  # 45s: Optimized LLM (30s) + 15s buffer
                 )
                 tasks.append(task)
             
@@ -253,10 +254,10 @@ class OrchestratorAgent:
         try:
             tasks = []
             for product_id in product_ids:
-                # AGENTIC AI: Realistic timeout for LLM-based price analysis
+                # AGENTIC AI OPTIMIZATION: Reduced timeout for faster response
                 task = asyncio.wait_for(
                     price_tracker_agent.analyze_price(product_id),
-                    timeout=30.0  # 30s: 25s LLM + 5s DB/processing
+                    timeout=20.0  # 20s: Optimized LLM (15s) + 5s buffer
                 )
                 tasks.append(task)
             
@@ -280,10 +281,10 @@ class OrchestratorAgent:
             if len(product_ids) < 2:
                 return {"success": False, "error": "Need at least 2 products to compare"}
             
-            # AGENTIC AI: Realistic timeout for LLM comparison
+            # AGENTIC AI OPTIMIZATION: Reduced timeout with optimized prompts
             comparison_result = await asyncio.wait_for(
                 comparison_agent.compare_products(product_ids=product_ids),
-                timeout=100.0  # 100s: 90s LLM + 10s processing buffer
+                timeout=60.0  # 60s: Optimized LLM (50s) + 10s buffer
             )
             
             # Add frontend-ready table data if comparison successful

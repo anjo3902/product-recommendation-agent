@@ -3,7 +3,6 @@ Product Embeddings Generator - Creates vector representations for semantic searc
 """
 import json
 from typing import List, Dict, Any
-from sentence_transformers import SentenceTransformer
 from sqlalchemy.orm import Session
 
 from src.database.models import Product
@@ -16,9 +15,10 @@ class EmbeddingGenerator:
     
     def __init__(self):
         """Initialize the embedding model"""
-        # Use lightweight but powerful model
-        self.model = SentenceTransformer('all-MiniLM-L6-v2')
-        print("✅ Embedding model loaded: all-MiniLM-L6-v2")
+        # Use fastembed - lightweight, no PyTorch DLL issues
+        from fastembed import TextEmbedding
+        self.model = TextEmbedding(model_name="BAAI/bge-small-en-v1.5")
+        print("[OK] Embedding model loaded: BAAI/bge-small-en-v1.5 (fastembed)")
     
     def create_product_text(self, product: Product) -> str:
         """
@@ -55,8 +55,9 @@ class EmbeddingGenerator:
     
     def generate_embedding(self, text: str) -> List[float]:
         """Generate embedding vector for text"""
-        embedding = self.model.encode(text, convert_to_tensor=False)
-        return embedding.tolist()
+        # fastembed returns generator, get first result
+        embeddings = list(self.model.embed([text]))
+        return embeddings[0].tolist()
     
     def populate_vector_db(self, batch_size: int = 100):
         """

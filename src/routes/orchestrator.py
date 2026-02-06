@@ -130,18 +130,34 @@ async def orchestrate_simple_recommendation(request: OrchestrateRequestSimple):
     - Frontend with minimal UI
     """
     try:
+        import sys
+        log_msg = f"[DEBUG] /simple endpoint called with query: '{request.query}'\n"
+        sys.stdout.write(log_msg)
+        sys.stdout.flush()
+        
         result = await orchestrator_agent.orchestrate_recommendation(
             query=request.query,
             top_n=3,
             user_preference="balanced"
         )
         
+        log_msg2 = f"[DEBUG] Orchestrator result success={result.get('success')}, products={len(result.get('products', []))}, error={result.get('error')}\n"
+        sys.stdout.write(log_msg2)
+        sys.stdout.flush()
+        
         if not result.get('success'):
+            error_msg = result.get('error', 'No products found matching your query')
+            log_msg3 = f"[DEBUG] Raising 404: {error_msg}\n"
+            sys.stdout.write(log_msg3)
+            sys.stdout.flush()
             raise HTTPException(
                 status_code=404,
-                detail=result.get('error', 'No products found')
+                detail=error_msg
             )
         
+        log_msg4 = f"[DEBUG] Returning {len(result.get('products', []))} products\n"
+        sys.stdout.write(log_msg4)
+        sys.stdout.flush()
         return result
         
     except HTTPException:

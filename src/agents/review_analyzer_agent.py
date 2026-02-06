@@ -1,4 +1,4 @@
-# src/agents/review_analyzer_agent.py
+﻿# src/agents/review_analyzer_agent.py
 import ollama
 import os
 import asyncio
@@ -21,9 +21,9 @@ class ReviewAnalyzerAgent:
         # Test Ollama connection
         try:
             self.client.list()
-            print(f"✅ Review Analyzer: Ollama connected! Using model: {self.model_name}")
+            print(f"[OK] Review Analyzer: Ollama connected! Using model: {self.model_name}")
         except Exception as e:
-            print(f"⚠️  Ollama not running. Start with: ollama serve")
+            print(f"[WARN]  Ollama not running. Start with: ollama serve")
             print(f"   Error: {e}")
     
     async def analyze_reviews(
@@ -129,7 +129,7 @@ Be concise."""
                         timeout=90.0  # 90s timeout: Increased for Ollama local LLM (was 50s)
                     )
                     executor.shutdown(wait=False)
-                    logger.info(f"✅ LLM review analysis completed for product {product_id}")
+                    logger.info(f"[OK] LLM review analysis completed for product {product_id}")
                 else:
                     raise Exception("Ollama client not available")
             except asyncio.TimeoutError as e:

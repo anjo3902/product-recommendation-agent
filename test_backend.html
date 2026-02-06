@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Backend Test</title>
+    <style>
+        body { font-family: Arial; padding: 20px; background: #1e1e1e; color: #fff; }
+        button { padding: 15px 30px; font-size: 18px; cursor: pointer; background: #4CAF50; color: white; border: none; border-radius: 5px; }
+        button:hover { background: #45a049; }
+        #result { margin-top: 20px; padding: 15px; background: #2d2d2d; border-radius: 5px; white-space: pre-wrap; }
+        .error { color: #ff6b6b; }
+        .success { color: #51cf66; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Backend API Test</h1>
+    <p>This will test if the backend is responding correctly</p>
+    
+    <button onclick="testBackend()">Test Backend Search</button>
+    
+    <div id="result"></div>
+
+    <script>
+        async function testBackend() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '⏳ Testing...';
+            
+            try {
+                const response = await fetch('http://localhost:8000/api/orchestrate/simple', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8',
+                        'Accept': 'application/json; charset=UTF-8',
+                        'ngrok-skip-browser-warning': 'true'
+                    },
+                    body: JSON.stringify({ query: 'laptop' })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.className = 'success';
+                    resultDiv.innerHTML = `✅ SUCCESS!
+                    
+Status: ${response.status}
+Success: ${data.success}
+Products: ${data.products ? data.products.length : 0}
+
+${data.products ? 'First Product:\n' + JSON.stringify(data.products[0], null, 2) : ''}`;
+                } else {
+                    resultDiv.className = 'error';
+                    resultDiv.innerHTML = `❌ ERROR!
+                    
+Status: ${response.status}
+Error: ${data.detail || data.error || 'Unknown'}
+
+Full Response:
+${JSON.stringify(data, null, 2)}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'error';
+                resultDiv.innerHTML = `❌ NETWORK ERROR!
+                
+${error.message}
+
+This usually means:
+1. Backend is not running on port 8000
+2. CORS issue
+3. Network connectivity problem`;
+            }
+        }
+    </script>
+</body>
+</html>

@@ -25,9 +25,9 @@ class ProductSearchAgent:
         # Test Ollama connection
         try:
             self.client.list()  # Check if Ollama is running
-            print(f"✅ Ollama connected! Using model: {self.model_name}")
+            print(f"[OK] Ollama connected! Using model: {self.model_name}")
         except Exception as e:
-            print(f"⚠️  Ollama not running. Start with: ollama serve")
+            print(f"[WARN] Ollama not running. Start with: ollama serve")
             print(f"   Error: {e}")
         
         # Initialize embedding generator for semantic search
@@ -56,11 +56,19 @@ class ProductSearchAgent:
         Returns:
             Dictionary with search results and AI insights
         """
+        import sys
+        sys.stdout.write(f"[SEARCH] Starting search for: '{query}'\n")
+        sys.stdout.flush()
+        
         db = next(get_db())
         
         try:
             # Step 1: Parse query intent using Gemini
+            sys.stdout.write(f"[SEARCH] Parsing intent...\n")
+            sys.stdout.flush()
             intent = self._parse_search_intent(query)
+            sys.stdout.write(f"[SEARCH] Intent parsed: {intent}\n")
+            sys.stdout.flush()
             
             # Extract category from intent if not provided
             if not category and intent.get('category'):
@@ -86,6 +94,8 @@ class ProductSearchAgent:
                     print(f"Price range parsing warning: {e}")
             
             # Step 2: SEMANTIC SEARCH using ChromaDB (70% weight)
+            sys.stdout.write(f"[SEARCH] Running semantic search...\n")
+            sys.stdout.flush()
             semantic_results = self.embedder.search_similar_products(
                 query=query,
                 n_results=limit * 2,  # Get more for better ranking
@@ -93,8 +103,12 @@ class ProductSearchAgent:
                 min_price=min_price,
                 max_price=max_price
             )
+            sys.stdout.write(f"[SEARCH] Semantic results: {len(semantic_results)} products\n")
+            sys.stdout.flush()
             
             # Step 3: TRADITIONAL SEARCH using PostgreSQL (30% weight)
+            sys.stdout.write(f"[SEARCH] Running traditional search...\n")
+            sys.stdout.flush()
             traditional_results = self._traditional_search(
                 db=db,
                 intent=intent,
@@ -104,13 +118,19 @@ class ProductSearchAgent:
                 min_rating=min_rating,
                 limit=limit * 2
             )
+            sys.stdout.write(f"[SEARCH] Traditional results: {len(traditional_results)} products\n")
+            sys.stdout.flush()
             
             # Step 4: HYBRID RANKING - Combine both results
+            sys.stdout.write(f"[SEARCH] Combining results...\n")
+            sys.stdout.flush()
             combined_products = self._combine_and_rank(
                 semantic_results=semantic_results,
                 traditional_results=traditional_results,
                 limit=limit
             )
+            sys.stdout.write(f"[SEARCH] Combined results: {len(combined_products)} products\n")
+            sys.stdout.flush()
             
             # Step 5: Enrich results with AI insights
             results = self._enrich_results(combined_products, query, intent)

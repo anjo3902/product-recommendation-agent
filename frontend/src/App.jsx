@@ -1,14 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, Suspense, lazy } from 'react';
 import { AuthProvider } from './contexts/AuthContext';
-import Login from './components/Login';
-import Signup from './components/Signup';
-import UserProfile from './components/UserProfile';
-import Wishlist from './components/Wishlist';
-import SearchHistory from './components/SearchHistory';
-import Recommendations from './components/Recommendations';
-import ConversationAgent from './components/ConversationAgent';
 import { useAuth } from './contexts/AuthContext';
 import './App.css';
+
+// Lazy load heavy components for faster initial load
+const Login = lazy(() => import('./components/Login'));
+const Signup = lazy(() => import('./components/Signup'));
+const UserProfile = lazy(() => import('./components/UserProfile'));
+const Wishlist = lazy(() => import('./components/Wishlist'));
+const SearchHistory = lazy(() => import('./components/SearchHistory'));
+const Recommendations = lazy(() => import('./components/Recommendations'));
+const ConversationAgent = lazy(() => import('./components/ConversationAgent'));
+
+// Loading fallback component
+const LoadingFallback = () => (
+  <div className="app-loading">
+    <div className="spinner-large"></div>
+    <p>Loading...</p>
+  </div>
+);
 
 /**
  * Main App Component with Authentication
@@ -18,35 +28,34 @@ function AppContent() {
   const [showSignup, setShowSignup] = useState(false);
   const [currentPage, setCurrentPage] = useState('recommendations'); // 'recommendations', 'agent', 'wishlist', 'history', 'profile'
 
-  // Loading state
-  if (loading) {
-    return (
-      <div className="app-loading">
-        <div className="spinner-large"></div>
-        <p>Loading...</p>
-      </div>
-    );
+  // OPTIMIZATION: Show login immediately if not authenticated
+  // Only show loading for authenticated users
+  if (loading && isAuthenticated !== false) {
+    // Still checking auth - but this should be fast (max 1s)
+    return null; // The initial loader in index.html will handle this
   }
 
   // Not authenticated - show login/signup
   if (!isAuthenticated) {
     return (
       <div className="app">
-        {showSignup ? (
-          <Signup
-            onSwitchToLogin={() => setShowSignup(false)}
-            onSignupSuccess={() => {
-              // User is automatically logged in after signup
-            }}
-          />
-        ) : (
-          <Login
-            onSwitchToSignup={() => setShowSignup(true)}
-            onLoginSuccess={() => {
-              // User is automatically logged in
-            }}
-          />
-        )}
+        <Suspense fallback={<LoadingFallback />}>
+          {showSignup ? (
+            <Signup
+              onSwitchToLogin={() => setShowSignup(false)}
+              onSignupSuccess={() => {
+                // User is automatically logged in after signup
+              }}
+            />
+          ) : (
+            <Login
+              onSwitchToSignup={() => setShowSignup(true)}
+              onLoginSuccess={() => {
+                // User is automatically logged in
+              }}
+            />
+          )}
+        </Suspense>
       </div>
     );
   }
@@ -114,7 +123,9 @@ function AppContent() {
       </header>
 
       <main className="app-main">
-        {renderPage()}
+        <Suspense fallback={<LoadingFallback />}>
+          {renderPage()}
+        </Suspense>
       </main>
 
       <footer className="app-footer">

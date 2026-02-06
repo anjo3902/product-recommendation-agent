@@ -1,4 +1,4 @@
-"""
+﻿"""
 Price Chart Generator - Visual Price History Charts
 
 Generates:
@@ -287,7 +287,7 @@ class PriceChartGenerator:
         if trend_pct < -5:
             return "decreasing", "📉", trend_pct
         elif trend_pct > 5:
-            return "increasing", "📈", trend_pct
+            return "increasing", "[TREND]", trend_pct
         else:
             return "stable", "➡️", trend_pct
     
@@ -307,7 +307,7 @@ class PriceChartGenerator:
         if max_price > current:
             drop_pct = ((max_price - current) / max_price) * 100
             if drop_pct >= 40:
-                insights.append(f"💡 Massive price drop! {drop_pct:.0f}% off from peak!")
+                insights.append(f"[INFO] Massive price drop! {drop_pct:.0f}% off from peak!")
             elif drop_pct >= 20:
                 insights.append(f"📉 Price down {drop_pct:.0f}% from highest")
         
@@ -315,19 +315,19 @@ class PriceChartGenerator:
         if trend == "decreasing":
             insights.append(f"📉 Prices trending downward ({abs(trend_pct):.1f}% last month)")
         elif trend == "increasing":
-            insights.append(f"📈 Prices going up ({trend_pct:.1f}% last month)")
+            insights.append(f"[TREND] Prices going up ({trend_pct:.1f}% last month)")
         
         # Current vs average
         if current < avg * 0.95:
             diff_pct = ((avg - current) / avg) * 100
-            insights.append(f"✅ {diff_pct:.0f}% below average price")
+            insights.append(f"[OK] {diff_pct:.0f}% below average price")
         elif current > avg * 1.05:
             diff_pct = ((current - avg) / avg) * 100
-            insights.append(f"⚠️ {diff_pct:.0f}% above average price")
+            insights.append(f"[WARN] {diff_pct:.0f}% above average price")
         
         # Near lowest price
         if current <= min_price * 1.05:
-            insights.append("🎯 Near all-time low price!")
+            insights.append("[TARGET] Near all-time low price!")
         
         return insights
     
@@ -343,7 +343,7 @@ class PriceChartGenerator:
         if current <= min_price * 1.05:
             return {
                 "action": "buy_now",
-                "emoji": "✅",
+                "emoji": "[OK]",
                 "text": "Excellent time to buy!",
                 "reason": "Price is at or near all-time low"
             }
@@ -414,7 +414,7 @@ class PriceChartGenerator:
         
         # Build chart
         chart = []
-        chart.append(f"\n📊 Price History (Last {len(prices)} days)")
+        chart.append(f"\n[DATA] Price History (Last {len(prices)} days)")
         chart.append("")
         
         # Y-axis and data points
@@ -449,7 +449,7 @@ class PriceChartGenerator:
         drop_pct = ((max_price - current_price) / max_price) * 100
         
         if drop_pct >= 20:
-            chart.append(f"💡 Price dropped {drop_pct:.0f}% from peak!")
+            chart.append(f"[INFO] Price dropped {drop_pct:.0f}% from peak!")
         
         recommendation = self._get_recommendation(
             current_price, min_price, sum(prices)/len(prices), "stable"

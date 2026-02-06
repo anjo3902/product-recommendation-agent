@@ -31,6 +31,33 @@ const PriceHistoryChart = ({ productName, priceData }) => {
         labels = priceData.chart_data.labels || [];
       }
 
+      // CRITICAL FIX: Filter out invalid data points (null, undefined, NaN)
+      const validDataPoints = [];
+      prices.forEach((price, index) => {
+        const label = labels[index];
+        // Check if price is valid number and label exists
+        if (
+          price != null && 
+          !isNaN(price) && 
+          isFinite(price) && 
+          label != null && 
+          label !== '' && 
+          label !== 'NaN'
+        ) {
+          validDataPoints.push({ price, label });
+        }
+      });
+
+      // Update arrays with only valid data
+      if (validDataPoints.length > 0) {
+        prices = validDataPoints.map(d => d.price);
+        labels = validDataPoints.map(d => d.label);
+      } else {
+        // No valid data, reset to empty
+        prices = [];
+        labels = [];
+      }
+
       if (prices.length > 0) {
         // PRODUCTION FIX: Add current price to chart if it's different from last historical price
         const current = priceData.current_price || prices[prices.length - 1];
@@ -190,8 +217,25 @@ const PriceHistoryChart = ({ productName, priceData }) => {
     labels.forEach((label, index) => {
       if (index % step === 0) {
         const x = getX(index);
-        const date = new Date(label);
-        const dateStr = `${date.getDate()}/${date.getMonth() + 1}`;
+        let dateStr = '';
+        
+        // CRITICAL FIX: Safely parse and validate date
+        if (label && label !== 'NaN' && label !== 'Today') {
+          const date = new Date(label);
+          // Check if date is valid
+          if (!isNaN(date.getTime())) {
+            dateStr = `${date.getDate()}/${date.getMonth() + 1}`;
+          } else {
+            // Invalid date, show index or skip
+            dateStr = `Day ${index + 1}`;
+          }
+        } else if (label === 'Today') {
+          dateStr = 'Today';
+        } else {
+          // Fallback for invalid label
+          dateStr = `Day ${index + 1}`;
+        }
+        
         ctx.fillText(dateStr, x, height - padding.bottom + 20);
       }
     });
