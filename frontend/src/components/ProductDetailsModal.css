@@ -111,13 +111,17 @@
 }
 
 .placeholder-icon {
-    font-size: 80px;
-    margin-bottom: 20px;
+    font-size: 28px;
+    margin-bottom: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
 }
 
 .placeholder-text {
-    font-size: 18px;
-    font-weight: 600;
+    font-size: 16px;
+    font-weight: 500;
+    opacity: 0.9;
 }
 
 /* Details Section */

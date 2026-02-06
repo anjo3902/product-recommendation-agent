@@ -83,41 +83,60 @@ function AppContent() {
     <div className="app">
       <header className="app-header">
         <div className="container">
-          <h1>🛍️ AI-Powered Shopping</h1>
+          <div className="header-brand">
+            <h1>Product Recommendation</h1>
+            <span className="header-subtitle">Intelligent Shopping Assistant</span>
+          </div>
           <nav className="main-nav">
             <button
               className={currentPage === 'recommendations' ? 'nav-btn active' : 'nav-btn'}
               onClick={() => setCurrentPage('recommendations')}
             >
-              ✨ For You
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+              </svg>
+              <span>For You</span>
             </button>
             <button
               className={currentPage === 'agent' ? 'nav-btn active' : 'nav-btn'}
               onClick={() => setCurrentPage('agent')}
             >
-              🤖 AI Assistant
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+              </svg>
+              <span>AI Chat</span>
             </button>
             <button
               className={currentPage === 'wishlist' ? 'nav-btn active' : 'nav-btn'}
-              onClick={() => setCurrentPage('wishlist')}
-            >
-              ❤️ Wishlist
+              onClick={() => setCurrentPage('wishlist')}            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+              </svg>
+              <span>Wishlist</span>
             </button>
             <button
               className={currentPage === 'history' ? 'nav-btn active' : 'nav-btn'}
               onClick={() => setCurrentPage('history')}
             >
-              🔍 History
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 16 14"/>
+              </svg>
+              <span>History</span>
             </button>
             <button
               className={currentPage === 'profile' ? 'nav-btn active' : 'nav-btn'}
               onClick={() => setCurrentPage('profile')}
             >
-              👤 Profile
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+              <span>Profile</span>
             </button>
           </nav>
           <div className="user-info">
-            <span>Welcome, {user?.full_name || user?.username}!</span>
+            <span className="user-name">{user?.full_name || user?.username}</span>
           </div>
         </div>
       </header>
@@ -129,7 +148,9 @@ function AppContent() {
       </main>
 
       <footer className="app-footer">
-        <p>&copy; 2026 Product Recommendation System. All rights reserved.</p>
+        <div className="container">
+          <p>&copy; 2026 Product Recommendation System. All rights reserved.</p>
+        </div>
       </footer>
     </div>
   );

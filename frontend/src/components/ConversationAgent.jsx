@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import ProductCard from './ProductCard';
+import ProductDetailsModal from './ProductDetailsModal';
 import PriceHistoryChart from './PriceHistoryChart';
 import formatOrchestratorResponse from '../utils/formatOrchestratorResponse';
 import API_BASE_URL from '../config';
@@ -71,7 +72,7 @@ const formatTextResponse = (text) => {
     if (line.trim().startsWith('+')) {
       elements.push(
         <div key={key++} className="response-bullet-plus">
-          <span className="bullet-icon">✓</span>
+          <span className="bullet-icon">•</span>
           {line.trim().substring(1).trim()}
         </div>
       );
@@ -161,6 +162,7 @@ const ConversationAgent = () => {
   const [summary, setSummary] = useState(null);
   const [activeAgents, setActiveAgents] = useState([]);
   const [orchestrating, setOrchestrating] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -247,7 +249,7 @@ const ConversationAgent = () => {
       if (isProductQuery) {
         // Show all 5 active agents - FORCE REFRESH
         const allAgents = ['Product Search', 'Review Analyzer', 'Price Tracker', 'Comparison', 'Buy Plan'];
-        console.log('🔥 ALL 5 AGENTS ACTIVE:', allAgents, 'COUNT:', allAgents.length);
+        console.log('[AGENTS] ALL 5 ACTIVE:', allAgents, 'COUNT:', allAgents.length);
         setActiveAgents(allAgents);
 
         // Call backend orchestrator
@@ -343,16 +345,16 @@ const ConversationAgent = () => {
   };
 
   const callOrchestratorAgent = async (query) => {
-    console.log('🔍 Calling orchestrator with query:', query);
-    console.log('🔑 Using token:', token ? 'Yes' : 'No');
-    console.log('📡 API URL:', `${API_BASE_URL}/api/orchestrate/simple`);
+    console.log('[ORCHESTRATOR] Calling with query:', query);
+    console.log('[AUTH] Using token:', token ? 'Yes' : 'No');
+    console.log('[API] URL:', `${API_BASE_URL}/api/orchestrate/simple`);
     
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 120000);
 
       const requestBody = { query };
-      console.log('📤 Request body:', JSON.stringify(requestBody));
+      console.log('[REQUEST] Body:', JSON.stringify(requestBody));
 
       const response = await fetch(`${API_BASE_URL}/api/orchestrate/simple`, {
         method: 'POST',
@@ -366,11 +368,11 @@ const ConversationAgent = () => {
 
       clearTimeout(timeoutId);
 
-      console.log('📥 Response status:', response.status, response.statusText);
+      console.log('[RESPONSE] Status:', response.status, response.statusText);
 
       if (!response.ok) {
         const errorText = await response.text();
-        console.error('❌ Backend error:', response.status, errorText);
+        console.error('[ERROR] Backend error:', response.status, errorText);
         return {
           success: false,
           error: `Backend error (${response.status}): ${errorText}`,
@@ -378,13 +380,13 @@ const ConversationAgent = () => {
       }
 
       const text = await response.text();
-      console.log('📥 Response text length:', text.length);
+      console.log('[RESPONSE] Text length:', text.length);
       const result = JSON.parse(text);
       console.log('✅ Parsed result:', result.success, 'Products:', result.products?.length);
 
       return result;
     } catch (err) {
-      console.error('❌ Orchestrator error:', err);
+      console.error('[ERROR] Orchestrator error:', err);
       return {
         success: false,
         error: `Error: ${err.message}`,
@@ -400,7 +402,7 @@ const ConversationAgent = () => {
     }
 
     if (lowerMessage.includes('help')) {
-      return `🤖 I'm here to help! I can:\n\n* Search for products\n* Compare multiple items\n* Analyze reviews and ratings\n* Track price trends\n* Recommend the best payment options\n\nJust tell me what product you're interested in!`;
+      return `I'm here to help! I can:\n\n* Search for products\n* Compare multiple items\n* Analyze reviews and ratings\n* Track price trends\n* Recommend the best payment options\n\nJust tell me what product you're interested in!`;
     }
 
     if (lowerMessage.includes('thank')) {
@@ -464,15 +466,91 @@ const ConversationAgent = () => {
   };
 
   const getIntentIcon = (intent) => {
-    const icons = {
-      search: '[Search]',
-      buy_plan: '🛒',
-      compare: '[Compare]',
-      recommendation: '⭐',
-      general: '[Chat]',
-      processing: '[...]',
-    };
-    return icons[intent] || '[Chat]';
+    const intentLower = intent?.toLowerCase() || '';
+    
+    if (intentLower.includes('search')) {
+      return (
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="11" cy="11" r="8"/>
+          <path d="m21 21-4.35-4.35"/>
+        </svg>
+      );
+    }
+    if (intentLower.includes('buy') || intentLower.includes('plan')) {
+      return (
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="9" cy="21" r="1"/>
+          <circle cx="20" cy="21" r="1"/>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+        </svg>
+      );
+    }
+    if (intentLower.includes('compar')) {
+      return (
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+          <line x1="9" y1="3" x2="9" y2="21"/>
+        </svg>
+      );
+    }
+    if (intentLower.includes('recommend')) {
+      return (
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+        </svg>
+      );
+    }
+    // General chat or processing
+    return (
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+      </svg>
+    );
+  };
+
+  const getAgentIcon = (agentName) => {
+    const name = agentName.toLowerCase();
+    
+    if (name.includes('product') || name.includes('search')) {
+      return (
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="11" cy="11" r="8"/>
+          <path d="m21 21-4.35-4.35"/>
+        </svg>
+      );
+    }
+    if (name.includes('review') || name.includes('analyz')) {
+      return (
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+        </svg>
+      );
+    }
+    if (name.includes('price') || name.includes('track')) {
+      return (
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+        </svg>
+      );
+    }
+    if (name.includes('compar')) {
+      return (
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+          <line x1="9" y1="3" x2="9" y2="21"/>
+        </svg>
+      );
+    }
+    if (name.includes('buy') || name.includes('plan')) {
+      return (
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="9" cy="21" r="1"/>
+          <circle cx="20" cy="21" r="1"/>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+        </svg>
+      );
+    }
+    return null;
   };
 
   const getSentimentColor = (sentiment) => {
@@ -489,7 +567,7 @@ const ConversationAgent = () => {
       {/* Header */}
       <div className="agent-header">
         <div className="header-content">
-          <h1>🤖 AI Shopping Assistant</h1>
+          <h1>AI Shopping Assistant</h1>
           <p>Chat with our intelligent agent for personalized shopping help</p>
         </div>
         {summary && (
@@ -513,18 +591,14 @@ const ConversationAgent = () => {
           <div className="agent-activity-bar">
             <div className="activity-header">
               <div className="pulse-indicator"></div>
-              <span>🤖 ALL 5 AGENTS ACTIVE ({activeAgents.length}/5)</span>
+              <span>ALL 5 AGENTS ACTIVE ({activeAgents.length}/5)</span>
             </div>
             <div className="active-agents">
-              {console.log('🔥 RENDERING AGENTS:', activeAgents)}
+              {console.log('[AGENTS] RENDERING:', activeAgents)}
               {activeAgents.map((agent, i) => (
                 <div key={i} className="agent-chip">
-                  {agent === 'Product Search' && '🔍'}
-                  {agent === 'Review Analyzer' && '⭐'}
-                  {agent === 'Price Tracker' && '💰'}
-                  {agent === 'Comparison' && '⚖️'}
-                  {agent === 'Buy Plan' && '🛒'}
-                  {' '}{agent}
+                  <span className="agent-badge">{getAgentIcon(agent)}</span>
+                  {agent}
                 </div>
               ))}
             </div>
@@ -535,33 +609,65 @@ const ConversationAgent = () => {
         <div className="messages-container">
           {conversations.length === 0 ? (
             <div className="welcome-message">
-              <span className="icon-badge icon-robot" style={{fontSize: '64px', marginBottom: '20px'}}>🤖</span>
+              <div className="welcome-icon">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="11" width="18" height="10" rx="2"/>
+                  <circle cx="12" cy="5" r="2"/>
+                  <path d="M12 7v4"/>
+                  <line x1="8" y1="16" x2="8" y2="16"/>
+                  <line x1="16" y1="16" x2="16" y2="16"/>
+                </svg>
+              </div>
               <h2>AI-Powered Shopping Assistant</h2>
               <p className="welcome-subtitle">Powered by 5 Specialized AI Agents</p>
 
               <div className="agent-features">
                 <div className="feature-card">
-                  <span className="icon-badge icon-search">🔍</span>
+                  <div className="icon-badge">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="11" cy="11" r="8"/>
+                      <path d="m21 21-4.35-4.35"/>
+                    </svg>
+                  </div>
                   <div className="feature-name">Product Search</div>
                   <div className="feature-desc">Find products matching your needs</div>
                 </div>
                 <div className="feature-card">
-                  <span className="icon-badge icon-star">⭐</span>
+                  <div className="icon-badge">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                    </svg>
+                  </div>
                   <div className="feature-name">Review Analysis</div>
                   <div className="feature-desc">Analyze customer reviews & ratings</div>
                 </div>
                 <div className="feature-card">
-                  <span className="icon-badge icon-money">💰</span>
+                  <div className="icon-badge">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                    </svg>
+                  </div>
                   <div className="feature-name">Price Tracking</div>
                   <div className="feature-desc">Track price trends & best deals</div>
                 </div>
                 <div className="feature-card">
-                  <span className="icon-badge icon-balance">⚖️</span>
+                  <div className="icon-badge">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                      <line x1="9" y1="3" x2="9" y2="21"/>
+                    </svg>
+                  </div>
                   <div className="feature-name">Comparison</div>
                   <div className="feature-desc">Compare products side-by-side</div>
                 </div>
                 <div className="feature-card">
-                  <span className="icon-badge icon-cart">🛒</span>
+                  <div className="icon-badge">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="9" cy="21" r="1"/>
+                      <circle cx="20" cy="21" r="1"/>
+                      <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                    </svg>
+                  </div>
                   <div className="feature-name">Buy Plan</div>
                   <div className="feature-desc">Best payment & savings options</div>
                 </div>
@@ -595,7 +701,12 @@ const ConversationAgent = () => {
                 <div key={conv.id || index} className="conversation-pair">
                   {/* User Message */}
                   <div className="message user-message">
-                    <div className="message-avatar">👤</div>
+                    <div className="message-avatar user-avatar">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                      </svg>
+                    </div>
                     <div className="message-content">
                       <div className="message-text">{conv.user_message}</div>
                       <div className="message-meta">
@@ -606,7 +717,15 @@ const ConversationAgent = () => {
 
                   {/* Agent Response */}
                   <div className="message agent-message">
-                    <div className="message-avatar">🤖</div>
+                    <div className="message-avatar ai-avatar">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <rect x="3" y="11" width="18" height="10" rx="2"/>
+                        <circle cx="12" cy="5" r="2"/>
+                        <path d="M12 7v4"/>
+                        <line x1="8" y1="16" x2="8" y2="16"/>
+                        <line x1="16" y1="16" x2="16" y2="16"/>
+                      </svg>
+                    </div>
                     <div className="message-content">
                       {conv.isLoading ? (
                         <div className="agent-loading">
@@ -633,7 +752,12 @@ const ConversationAgent = () => {
                           {/* Product Cards */}
                           {conv.products && conv.products.length > 0 && (
                             <div className="message-products">
-                              <h4>[+] Recommended Products:</h4>
+                              <h4>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: '8px', verticalAlign: 'middle'}}>
+                                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                                </svg>
+                                Recommended Products:
+                              </h4>
                               <div className="products-grid-mini">
                                 {conv.products.map((product) => (
                                   <ProductCard
@@ -644,9 +768,7 @@ const ConversationAgent = () => {
                                       // Add to wishlist logic
                                       console.log('Add to wishlist:', p);
                                     }}
-                                    onViewDetails={(p) => {
-                                      console.log('View details:', p);
-                                    }}
+                                    onViewDetails={setSelectedProduct}
                                   />
                                 ))}
                               </div>
@@ -698,7 +820,13 @@ const ConversationAgent = () => {
                                             <div className="badge-tag best-price-badge">Best Price</div>
                                           )}
                                           <div className="product-header">
-                                            <div className="product-image-placeholder">📱</div>
+                                            <div className="product-image-placeholder">
+                                              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                                                <line x1="3" y1="6" x2="21" y2="6"/>
+                                                <path d="M16 10a4 4 0 0 1-8 0"/>
+                                              </svg>
+                                            </div>
                                             <div className="product-title">{product.product_name}</div>
                                           </div>
                                         </th>
@@ -743,42 +871,42 @@ const ConversationAgent = () => {
                                       ))}
                                     </tr>
                                     <tr className="highlight-row">
-                                      <td className="feature-name">💰 Price</td>
+                                      <td className="feature-name">Price</td>
                                       {conv.orchestratorData.comparison.full_comparison.products.map((product) => (
                                         <td key={product.product_id} className={product.product_id === conv.orchestratorData.comparison.category_winners?.best_price?.product_id ? 'winner-cell' : ''}>
                                           <strong>₹{product.price?.toLocaleString()}</strong>
-                                          {product.product_id === conv.orchestratorData.comparison.category_winners?.best_price?.product_id && ' ✓'}
+                                          {product.product_id === conv.orchestratorData.comparison.category_winners?.best_price?.product_id && ' (Best)'}
                                         </td>
                                       ))}
                                     </tr>
                                     <tr>
-                                      <td className="feature-name">⭐ Rating</td>
+                                      <td className="feature-name">Rating</td>
                                       {conv.orchestratorData.comparison.full_comparison.products.map((product) => (
                                         <td key={product.product_id} className={product.product_id === conv.orchestratorData.comparison.category_winners?.best_rating?.product_id ? 'winner-cell' : ''}>
                                           {'★'.repeat(Math.floor(product.rating))}{'☆'.repeat(5 - Math.floor(product.rating))} ({product.rating}/5)
-                                          {product.product_id === conv.orchestratorData.comparison.category_winners?.best_rating?.product_id && ' ✓'}
+                                          {product.product_id === conv.orchestratorData.comparison.category_winners?.best_rating?.product_id && ' (Best)'}
                                         </td>
                                       ))}
                                     </tr>
                                     <tr>
-                                      <td className="feature-name">📊 Value Score</td>
+                                      <td className="feature-name">Value Score</td>
                                       {conv.orchestratorData.comparison.full_comparison.products.map((product) => (
                                         <td key={product.product_id} className={product.product_id === conv.orchestratorData.comparison.category_winners?.best_value?.product_id ? 'winner-cell' : ''}>
                                           {product.value_score ? `${(product.value_score * 100).toFixed(0)}%` : 'N/A'}
-                                          {product.product_id === conv.orchestratorData.comparison.category_winners?.best_value?.product_id && ' ✓'}
+                                          {product.product_id === conv.orchestratorData.comparison.category_winners?.best_value?.product_id && ' (Best)'}
                                         </td>
                                       ))}
                                     </tr>
                                     <tr>
-                                      <td className="feature-name">📦 Stock Status</td>
+                                      <td className="feature-name">Stock Status</td>
                                       {conv.orchestratorData.comparison.full_comparison.products.map((product) => (
                                         <td key={product.product_id} className={product.in_stock ? 'in-stock' : 'out-of-stock'}>
-                                          {product.in_stock ? '✓ In Stock' : '✗ Out of Stock'}
+                                          {product.in_stock ? 'In Stock' : 'Out of Stock'}
                                         </td>
                                       ))}
                                     </tr>
                                     <tr>
-                                      <td className="feature-name">🚚 Delivery</td>
+                                      <td className="feature-name">Delivery</td>
                                       {conv.orchestratorData.comparison.full_comparison.products.map((product) => (
                                         <td key={product.product_id}>
                                           {product.delivery_time || 'Standard Delivery'}
@@ -786,7 +914,7 @@ const ConversationAgent = () => {
                                       ))}
                                     </tr>
                                     <tr>
-                                      <td className="feature-name">🔧 Specifications</td>
+                                      <td className="feature-name">Specifications</td>
                                       {conv.orchestratorData.comparison.full_comparison.products.map((product) => (
                                         <td key={product.product_id}>
                                           {product.specifications ? (
@@ -802,7 +930,7 @@ const ConversationAgent = () => {
                                       ))}
                                     </tr>
                                     <tr>
-                                      <td className="feature-name">💬 Customer Reviews</td>
+                                      <td className="feature-name">Customer Reviews</td>
                                       {conv.orchestratorData.comparison.full_comparison.products.map((product) => (
                                         <td key={product.product_id}>
                                           {product.review_count ? `${product.review_count} reviews` : 'No reviews yet'}
@@ -814,7 +942,7 @@ const ConversationAgent = () => {
                               </div>
                               {conv.orchestratorData.comparison.recommendation && (
                                 <div className="comparison-recommendation">
-                                  <h5>💡 AI Recommendation:</h5>
+                                  <h5>AI Recommendation:</h5>
                                   <p>{conv.orchestratorData.comparison.recommendation}</p>
                                 </div>
                               )}
@@ -866,20 +994,55 @@ const ConversationAgent = () => {
               className="send-button"
               disabled={loading || !currentMessage.trim()}
             >
-              {loading ? '[...]' : 'Send'}
+              {loading ? (
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="spinning">
+                  <line x1="12" y1="2" x2="12" y2="6"/>
+                  <line x1="12" y1="18" x2="12" y2="22"/>
+                  <line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/>
+                  <line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/>
+                  <line x1="2" y1="12" x2="6" y2="12"/>
+                  <line x1="18" y1="12" x2="22" y2="12"/>
+                  <line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/>
+                  <line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/>
+                </svg>
+              ) : (
+                <>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13"/>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                  </svg>
+                  <span>Send</span>
+                </>
+              )}
             </button>
           </form>
 
           <div className="input-actions">
             <button className="action-btn" onClick={handleClearConversations}>
-              🗑️ Clear History
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="3 6 5 6 21 6"/>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+              </svg>
+              <span>Clear History</span>
             </button>
             <button className="action-btn" onClick={generateSessionId}>
-              ✨ New Session
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="23 4 23 10 17 10"/>
+                <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+              </svg>
+              <span>New Session</span>
             </button>
           </div>
         </div>
       </div>
+
+      {/* Product Details Modal */}
+      {selectedProduct && (
+        <ProductDetailsModal
+          product={selectedProduct}
+          onClose={() => setSelectedProduct(null)}
+        />
+      )}
     </div>
   );
 };

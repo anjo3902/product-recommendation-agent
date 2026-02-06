@@ -1,7 +1,8 @@
 .product-card {
-  background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
   overflow: hidden;
   transition: all 0.3s ease;
   position: relative;
@@ -11,8 +12,9 @@
 }
 
 .product-card:hover {
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+  border-color: var(--color-accent-light);
 }
 
 .product-card.out-of-stock {
@@ -44,17 +46,17 @@
 }
 
 .badge.discount {
-  background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+  background: #dc2626;
   color: white;
 }
 
 .badge.out-of-stock-badge {
-  background: #6c757d;
+  background: var(--color-text-tertiary);
   color: white;
 }
 
 .badge.recommendation-score {
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: var(--color-accent);
   color: white;
 }
 
@@ -63,7 +65,7 @@
   width: 100%;
   height: 220px;
   overflow: hidden;
-  background: #f8f9fa;
+  background: var(--color-bg-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -89,7 +91,7 @@
 }
 
 .product-category {
-  color: #667eea;
+  color: var(--color-accent);
   font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
@@ -100,7 +102,7 @@
 .product-name {
   font-size: 16px;
   font-weight: 600;
-  color: #2d3748;
+  color: var(--color-text-primary);
   margin: 0 0 6px 0;
   line-height: 1.4;
   display: -webkit-box;
@@ -111,7 +113,7 @@
 }
 
 .product-brand {
-  color: #718096;
+  color: var(--color-text-secondary);
   font-size: 13px;
   margin-bottom: 10px;
 }
@@ -148,7 +150,7 @@
 
 .rating-value {
   font-size: 13px;
-  color: #4a5568;
+  color: var(--color-text-secondary);
   font-weight: 500;
 }
 
@@ -164,12 +166,12 @@
 .product-price {
   font-size: 24px;
   font-weight: 700;
-  color: #2d3748;
+  color: var(--color-text-primary);
 }
 
 .product-original-price {
   font-size: 16px;
-  color: #a0aec0;
+  color: var(--color-text-tertiary);
   text-decoration: line-through;
 }
 
@@ -196,38 +198,48 @@
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: var(--color-accent);
   color: white;
   flex: 1;
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: linear-gradient(135deg, #5568d3, #6a3f8f);
+  background: var(--color-accent-hover);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  box-shadow: var(--shadow-md);
 }
 
 .btn-secondary {
-  background: #f7fafc;
-  color: #4a5568;
-  border: 1px solid #e2e8f0;
+  background: var(--color-bg-secondary);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background: #edf2f7;
-  border-color: #cbd5e0;
+  background: var(--color-bg-tertiary);
+  border-color: var(--color-accent);
 }
 
 .btn-icon {
-  background: #fff5f5;
-  border: 1px solid #feb2b2;
+  background: var(--color-bg-primary);
+  border: 2px solid var(--color-border);
   padding: 10px 14px;
   font-size: 18px;
 }
 
+.btn-wishlist svg {
+  stroke: #dc2626;
+  transition: all 0.2s ease;
+}
+
 .btn-icon:hover:not(:disabled) {
-  background: #fed7d7;
-  transform: scale(1.1);
+  border-color: #dc2626;
+  background: #fef2f2;
+  transform: scale(1.05);
+}
+
+.btn-icon:hover:not(:disabled) svg {
+  fill: #dc2626;
 }
 
 .btn-sm {

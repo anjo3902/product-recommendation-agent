@@ -1,4 +1,61 @@
-/* App Global Styles */
+/* =================================================================
+   PRODUCTION DESIGN SYSTEM
+   Professional, Neutral, Clean
+   ================================================================= */
+
+/* CSS Variables for Design Tokens */
+:root {
+  /* Neutral Colors - Professional Palette */
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f8f9fa;
+  --color-bg-tertiary: #f1f3f5;
+  --color-border: #e9ecef;
+  --color-border-hover: #dee2e6;
+  
+  /* Text Colors */
+  --color-text-primary: #212529;
+  --color-text-secondary: #495057;
+  --color-text-muted: #6c757d;
+  --color-text-light: #adb5bd;
+  
+  /* Accent Color - Subtle, Not Overpowering */
+  --color-accent: #4f46e5;
+  --color-accent-hover: #4338ca;
+  --color-accent-light: #eef2ff;
+  
+  /* Semantic Colors */
+  --color-success: #10b981;
+  --color-success-light: #d1fae5;
+  --color-error: #ef4444;
+  --color-error-light: #fee2e2;
+  --color-warning: #f59e0b;
+  --color-warning-light: #fef3c7;
+  
+  /* Shadows - Subtle Elevation */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  
+  /* Typography */
+  --font-system: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+}
+
+/* =================================================================
+   BASE STYLES
+   ================================================================= */
 
 * {
   margin: 0;
@@ -7,12 +64,11 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: var(--font-system);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: linear-gradient(to bottom, #f7fafc, #edf2f7);
+  background: var(--color-bg-secondary);
+  color: var(--color-text-primary);
   min-height: 100vh;
 }
 
@@ -22,24 +78,33 @@ body {
   flex-direction: column;
 }
 
+/* =================================================================
+   LOADING STATE
+   ================================================================= */
+
 .app-loading {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+}
+
+.app-loading p {
+  margin-top: var(--spacing-md);
+  color: var(--color-text-secondary);
+  font-size: 14px;
 }
 
 .spinner-large {
-  width: 48px;
-  height: 48px;
-  border: 4px solid rgba(255, 255, 255, 0.3);
-  border-top-color: white;
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-accent);
   border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-  margin-bottom: 20px;
+  animation: spin 0.6s linear infinite;
 }
 
 @keyframes spin {
@@ -48,123 +113,179 @@ body {
   }
 }
 
+/* =================================================================
+   HEADER - Professional Navigation
+   ================================================================= */
+
 .app-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 16px 0;
-  box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+  background: var(--color-bg-primary);
+  border-bottom: 1px solid var(--color-border);
+  padding: 0;
   position: sticky;
   top: 0;
   z-index: 100;
+  box-shadow: var(--shadow-sm);
 }
 
 .app-header .container {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 var(--spacing-lg);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 16px;
+  height: 64px;
+  gap: var(--spacing-lg);
+}
+
+.header-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .app-header h1 {
-  font-size: 28px;
-  font-weight: 700;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-text-primary);
   margin: 0;
-  letter-spacing: -0.5px;
+  letter-spacing: -0.3px;
+}
+
+.header-subtitle {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  font-weight: 400;
 }
 
 .main-nav {
   display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+  flex: 1;
+  justify-content: center;
 }
 
 .nav-btn {
-  background: rgba(255, 255, 255, 0.15);
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 10px 18px;
-  border-radius: 8px;
+  background: transparent;
+  color: var(--color-text-secondary);
+  border: none;
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s ease;
-  backdrop-filter: blur(10px);
+  transition: all 0.15s ease;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.nav-btn svg {
+  flex-shrink: 0;
+  transition: all 0.15s ease;
 }
 
 .nav-btn:hover {
-  background: rgba(255, 255, 255, 0.25);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-primary);
 }
 
 .nav-btn.active {
-  background: white;
-  color: #667eea;
-  border-color: white;
-  box-shadow: 0 4px 16px rgba(255, 255, 255, 0.3);
+  background: var(--color-accent-light);
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+.nav-btn.active svg {
+  stroke: var(--color-accent);
 }
 
 .user-info {
-  font-size: 14px;
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 8px 16px;
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 20px;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  gap: var(--spacing-sm);
+  padding: 6px 12px;
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
 }
+
+.user-name {
+  font-size: 14px;
+  color: var(--color-text-primary);
+  font-weight: 500;
+}
+
+/* =================================================================
+   MAIN CONTENT
+   ================================================================= */
 
 .app-main {
   flex: 1;
-  background: linear-gradient(to bottom, #f7fafc, #edf2f7);
-  padding-top: 20px;
+  background: var(--color-bg-secondary);
+  padding-top: var(--spacing-lg);
 }
 
+/* =================================================================
+   FOOTER
+   ================================================================= */
+
 .app-footer {
-  background: linear-gradient(135deg, #1a202c, #2d3748);
-  color: #cbd5e0;
-  padding: 32px 20px;
+  background: var(--color-bg-primary);
+  border-top: 1px solid var(--color-border);
+  padding: var(--spacing-lg);
   text-align: center;
-  font-size: 14px;
-  border-top: 1px solid #4a5568;
+}
+
+.app-footer .container {
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 .app-footer p {
   margin: 0;
+  font-size: 13px;
+  color: var(--color-text-muted);
 }
+
+/* =================================================================
+   CONTAINER
+   ================================================================= */
 
 .container {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 var(--spacing-lg);
 }
 
-/* Global Button Styles */
+/* =================================================================
+   GLOBAL BUTTON STYLES
+   ================================================================= */
+
 .btn {
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   cursor: pointer;
-  font-weight: 600;
-  transition: all 0.2s ease;
+  font-weight: 500;
+  transition: all 0.15s ease;
   font-size: 14px;
   padding: 10px 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: var(--color-accent);
   color: white;
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: linear-gradient(135deg, #5568d3, #6a3f8f);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  background: var(--color-accent-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
 }
 
 .btn:disabled {
@@ -172,31 +293,54 @@ body {
   cursor: not-allowed;
 }
 
-/* Responsive Design */
+/* =================================================================
+   RESPONSIVE DESIGN
+   ================================================================= */
+
 @media (max-width: 1024px) {
-  .app-header h1 {
-    font-size: 22px;
+  .app-header .container {
+    padding: 0 var(--spacing-md);
+  }
+
+  .main-nav {
+    gap: var(--spacing-xs);
   }
 
   .nav-btn {
-    padding: 8px 14px;
+    padding: 6px 12px;
     font-size: 13px;
   }
 }
 
 @media (max-width: 768px) {
-  .app-header {
-    padding: 12px 0;
+  .app-header .container {
+    flex-wrap: wrap;
+    height: auto;
+    padding: var(--spacing-md);
+    gap: var(--spacing-md);
   }
 
-  .app-header .container {
-    flex-direction: column;
-    gap: 12px;
-    padding: 0 16px;
+  .header-brand {
+    flex: 1;
   }
 
   .app-header h1 {
-    font-size: 20px;
+    font-size: 16px;
+  }
+
+  .header-subtitle {
+    font-size: 11px;
+  }
+
+  .main-nav {
+    width: 100%;
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding-bottom: var(--spacing-xs);
+  }
+
+  .user-info {
+    margin-left: auto;
   }
 
   .main-nav {

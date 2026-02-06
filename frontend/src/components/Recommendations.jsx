@@ -78,12 +78,12 @@ const Recommendations = () => {
         if (response.status === 400 && errorData.detail?.includes('already in wishlist')) {
           alert('ℹ️ This product is already in your wishlist');
         } else {
-          alert(`❌ Failed to add to wishlist: ${errorData.detail || 'Unknown error'}`);
+          alert(`Failed to add to wishlist: ${errorData.detail || 'Unknown error'}`);
         }
       }
     } catch (err) {
       console.error('Error adding to wishlist:', err);
-      alert('❌ Network error. Please check your connection.');
+      alert('Network error. Please check your connection.');
     }
   };
 
@@ -96,7 +96,7 @@ const Recommendations = () => {
     <div className="recommendations-container">
       {/* Simple Header - Like Amazon */}
       <div className="recommendations-header-simple">
-        <h1>✨ Recommended for you</h1>
+        <h1>Recommended for you</h1>
         <p>Based on your shopping activity</p>
       </div>
 
@@ -111,7 +111,7 @@ const Recommendations = () => {
       {/* Error */}
       {error && (
         <div className="error-banner">
-          <span className="error-icon">⚠️</span>
+          <span className="error-icon">!</span>
           <span>{error}</span>
           <button onClick={fetchRecommendations}>Try Again</button>
         </div>
@@ -134,7 +134,7 @@ const Recommendations = () => {
             </div>
           ) : (
             <div className="empty-state-clean">
-              <div className="empty-icon">🛍️</div>
+              <div className="empty-icon">!</div>
               <h3>Start Your Shopping Journey</h3>
               <p>
                 Search for products or add items to your wishlist to get personalized recommendations

@@ -121,7 +121,7 @@ const UserProfile = () => {
         {message && (
           <div className={`alert alert-${message.type}`}>
             {message.type === 'success' && '✅'}
-            {message.type === 'error' && '⚠️'}
+            {message.type === 'error' && '!'}
             {message.type === 'info' && 'ℹ️'}
             <span>{message.text}</span>
           </div>

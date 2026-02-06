@@ -61,7 +61,7 @@ const SimilarProducts = ({ productId, productName }) => {
       });
 
       if (response.ok) {
-        alert('Added to wishlist! ❤️');
+        alert('Added to wishlist!');
       }
     } catch (err) {
       console.error('Error adding to wishlist:', err);
@@ -77,7 +77,7 @@ const SimilarProducts = ({ productId, productName }) => {
     return (
       <div className="similar-products-widget">
         <div className="widget-header">
-          <h3>🔗 Similar Products</h3>
+          <h3>Similar Products</h3>
         </div>
         <div className="widget-loading">
           <div className="spinner"></div>
@@ -91,10 +91,10 @@ const SimilarProducts = ({ productId, productName }) => {
     return (
       <div className="similar-products-widget">
         <div className="widget-header">
-          <h3>🔗 Similar Products</h3>
+          <h3>Similar Products</h3>
         </div>
         <div className="widget-error">
-          <span className="error-icon">⚠️</span>
+          <span className="error-icon">!</span>
           <p>{error}</p>
           <button className="btn-retry" onClick={fetchSimilarProducts}>
             Retry
@@ -108,7 +108,7 @@ const SimilarProducts = ({ productId, productName }) => {
     return (
       <div className="similar-products-widget">
         <div className="widget-header">
-          <h3>🔗 Similar Products</h3>
+          <h3>Similar Products</h3>
         </div>
         <div className="widget-empty">
           <p>No similar products found</p>
@@ -121,7 +121,7 @@ const SimilarProducts = ({ productId, productName }) => {
     <div className="similar-products-widget">
       <div className="widget-header">
         <div>
-          <h3>🔗 Similar Products</h3>
+          <h3>Similar Products</h3>
           {productName && <p className="widget-subtitle">Similar to "{productName}"</p>}
         </div>
         <select

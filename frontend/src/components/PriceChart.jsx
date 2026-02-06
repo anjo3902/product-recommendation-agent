@@ -72,7 +72,7 @@ const PriceChart = ({ productId, days = 90 }) => {
   if (error) {
     return (
       <div className="price-chart-error">
-        <p>⚠️ {error}</p>
+        <p>{error}</p>
       </div>
     );
   }
@@ -223,7 +223,7 @@ const PriceChart = ({ productId, days = 90 }) => {
 
       {/* Price Zones Legend */}
       <div className="price-zones">
-        <h4>💰 Price Zones</h4>
+        <h4>Price Zones</h4>
         <div className="zones-grid">
           {priceZones.map((zone, index) => (
             <div key={index} className="zone-item">
@@ -242,7 +242,7 @@ const PriceChart = ({ productId, days = 90 }) => {
 
       {/* Insights */}
       <div className="insights-section">
-        <h4>💡 Insights</h4>
+        <h4>Insights</h4>
         <ul className="insights-list">
           {insights.map((insight, index) => (
             <li key={index}>{insight}</li>

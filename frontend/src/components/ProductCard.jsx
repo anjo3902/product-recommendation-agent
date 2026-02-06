@@ -172,24 +172,9 @@ const ProductCard = ({
             padding: '20px'
           }}
         >
-          <div style={{ fontSize: '48px', marginBottom: '10px' }}>
-            {category?.toLowerCase().includes('laptop') ? '💻' :
-              category?.toLowerCase().includes('phone') || category?.toLowerCase().includes('mobile') ? '📱' :
-                category?.toLowerCase().includes('headphone') || category?.toLowerCase().includes('audio') ? '🎧' :
-                  category?.toLowerCase().includes('camera') ? '📷' :
-                    category?.toLowerCase().includes('watch') ? '⌚' :
-                      category?.toLowerCase().includes('tablet') ? '📱' :
-                        category?.toLowerCase().includes('speaker') ? '🔊' :
-                          category?.toLowerCase().includes('tv') || category?.toLowerCase().includes('television') ? '📺' :
-                            category?.toLowerCase().includes('baby') || category?.toLowerCase().includes('kids') ? '👶' :
-                              category?.toLowerCase().includes('automotive') || category?.toLowerCase().includes('car') ? '🚗' :
-                                category?.toLowerCase().includes('home') || category?.toLowerCase().includes('kitchen') ? '🏠' :
-                                  category?.toLowerCase().includes('fashion') || category?.toLowerCase().includes('clothing') ? '👕' :
-                                    category?.toLowerCase().includes('sport') || category?.toLowerCase().includes('fitness') ? '⚽' :
-                                      category?.toLowerCase().includes('book') ? '📚' :
-                                        '🛍️'}
+          <div style={{ fontSize: '18px', marginBottom: '8px', fontWeight: '700', letterSpacing: '0.5px' }}>
+            {category || 'Product'}
           </div>
-          <div>{category || 'Product'}</div>
         </div>
       </div>
 
@@ -218,16 +203,17 @@ const ProductCard = ({
           <button
             className="btn btn-primary"
             onClick={() => onViewDetails && onViewDetails(product)}
-            disabled={!in_stock}
           >
             View Details
           </button>
           <button
-            className="btn btn-icon"
+            className="btn btn-icon btn-wishlist"
             onClick={() => onAddToWishlist && onAddToWishlist(product)}
             title="Add to Wishlist"
           >
-            ❤️
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M10 17.5C9.71527 17.5 9.44077 17.4 9.21522 17.2125L3.41522 12.2125C2.56401 11.4875 1.875 10.5667 1.40625 9.52292C0.9375 8.47917 0.697917 7.34375 0.697917 6.15625C0.697917 3.52083 2.81944 1.45833 5.5 1.45833C6.875 1.45833 8.15625 2.04167 9.08333 3.02083L10 3.98958L10.9167 3.02083C11.8438 2.04167 13.125 1.45833 14.5 1.45833C17.1806 1.45833 19.3021 3.52083 19.3021 6.15625C19.3021 7.34375 19.0625 8.47917 18.5938 9.52292C18.125 10.5667 17.436 11.4875 16.5848 12.2125L10.7848 17.2125C10.5592 17.4 10.2847 17.5 10 17.5Z" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+            </svg>
           </button>
           {showSimilar && (
             <button

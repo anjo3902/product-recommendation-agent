@@ -83,7 +83,7 @@ const ForYou = () => {
       });
 
       if (response.ok) {
-        alert('Added to wishlist! ❤️');
+        alert('Added to wishlist!');
       }
     } catch (err) {
       console.error('Error adding to wishlist:', err);
@@ -114,11 +114,11 @@ const ForYou = () => {
       return (
         <div className="for-you-container">
           <div className="error-state">
-            <div className="error-icon">🔧</div>
+            <div className="error-icon">!</div>
             <h3>Backend Setup Required</h3>
             <p>Your backend server is running but needs browser authentication.</p>
             <div style={{ textAlign: 'left', maxWidth: '600px', margin: '20px auto', padding: '20px', background: '#f0f0f0', borderRadius: '8px' }}>
-              <h4>📋 Quick Fix (One-time setup):</h4>
+              <h4>Quick Fix (One-time setup):</h4>
               <ol style={{ lineHeight: '1.8' }}>
                 <li>Open this link in a NEW TAB: <a href={`${ngrokUrl}/docs`} target="_blank" rel="noopener noreferrer" style={{ color: '#007bff', fontWeight: 'bold' }}>{ngrokUrl}/docs</a></li>
                 <li>Click "Visit Site" on the warning page</li>
@@ -126,7 +126,7 @@ const ForYou = () => {
                 <li>Click "Try Again" below</li>
               </ol>
               <p style={{ fontSize: '14px', color: '#666', marginTop: '10px' }}>
-                💡 <strong>Why?</strong> Your laptop uses ngrok to make the backend accessible. This is a one-time authentication.
+                <strong>Why?</strong> Your laptop uses ngrok to make the backend accessible. This is a one-time authentication.
               </p>
             </div>
             <button className="btn btn-primary" onClick={fetchRecommendations}>
@@ -140,8 +140,8 @@ const ForYou = () => {
     return (
       <div className="for-you-container">
         <div className="error-state">
-          <div className="error-icon">⚠️</div>
-          <h3>Oops! Something went wrong</h3>
+          <div className="error-icon">!</div>
+          <h3>Something went wrong</h3>
           <p>{error}</p>
           <button className="btn btn-primary" onClick={fetchRecommendations}>
             Try Again
@@ -188,12 +188,12 @@ const ForYou = () => {
       {/* Hero Section */}
       <div className="hero-section">
         <div className="hero-content">
-          <h1>✨ Personalized For You</h1>
+          <h1>Personalized For You</h1>
           <p>Handpicked recommendations based on your preferences and shopping history</p>
         </div>
         {recommendations.insights && (
           <div className="insights-card">
-            <h3>📊 Your Shopping Insights</h3>
+            <h3>Your Shopping Insights</h3>
             <div className="insights-grid">
               <div className="insight-item">
                 <div className="insight-value">{recommendations.insights.total_recommendations}</div>
@@ -221,36 +221,36 @@ const ForYou = () => {
         {renderSection(
           'Based on Your Wishlist',
           recommendations.wishlist_recommendations,
-          '❤️',
+          'WL',
           '#e53e3e'
         )}
 
         {renderSection(
           'Similar to What You Searched',
           recommendations.search_based_recommendations,
-          '🔍',
-          '#667eea'
+          'SR',
+          '#4f46e5'
         )}
 
         {renderSection(
           'Trending Now',
           recommendations.trending_products,
-          '🔥',
-          '#f56565'
+          'TR',
+          '#dc2626'
         )}
 
         {renderSection(
           'Popular in Your Favorite Categories',
           recommendations.category_recommendations,
-          '⭐',
-          '#ed8936'
+          'PO',
+          '#ea580c'
         )}
 
         {renderSection(
           'People Also Like',
           recommendations.collaborative_recommendations,
-          '👥',
-          '#48bb78'
+          'PA',
+          '#16a34a'
         )}
 
         {/* No Recommendations */}
@@ -260,7 +260,7 @@ const ForYou = () => {
           (!Array.isArray(recommendations.category_recommendations) || !recommendations.category_recommendations.length) &&
           (!Array.isArray(recommendations.collaborative_recommendations) || !recommendations.collaborative_recommendations.length) && (
             <div className="empty-state">
-              <div className="empty-icon">🎯</div>
+              <div className="empty-icon">!</div>
               <h3>Start Your Journey</h3>
               <p>Add products to your wishlist or search for items to get personalized recommendations!</p>
             </div>
@@ -270,7 +270,11 @@ const ForYou = () => {
       {/* Refresh Button */}
       <div className="refresh-section">
         <button className="btn btn-outline" onClick={fetchRecommendations}>
-          🔄 Refresh Recommendations
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="23 4 23 10 17 10"/>
+            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+          </svg>
+          <span>Refresh Recommendations</span>
         </button>
       </div>
     </div>

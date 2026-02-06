@@ -1,28 +1,31 @@
-/* Login Component Styles */
+/* =================================================================
+   LOGIN COMPONENT - Professional Authentication UI
+   ================================================================= */
 
 .login-container {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 20px;
+  background: var(--color-bg-secondary);
+  padding: var(--spacing-lg);
 }
 
 .login-card {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  background: var(--color-bg-primary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
   width: 100%;
-  max-width: 400px;
-  padding: 40px;
-  animation: slideIn 0.3s ease-out;
+  max-width: 420px;
+  padding: var(--spacing-xl);
+  border: 1px solid var(--color-border);
+  animation: fadeIn 0.3s ease-out;
 }
 
-@keyframes slideIn {
+@keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(-20px);
+    transform: translateY(-10px);
   }
   to {
     opacity: 1;
@@ -31,63 +34,66 @@
 }
 
 .login-header {
-  text-align: center;
-  margin-bottom: 30px;
+  margin-bottom: var(--spacing-xl);
 }
 
 .login-header h2 {
-  font-size: 28px;
-  font-weight: 700;
-  color: #333;
-  margin-bottom: 8px;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-xs);
+  letter-spacing: -0.3px;
 }
 
 .login-header p {
   font-size: 14px;
-  color: #666;
+  color: var(--color-text-muted);
 }
 
 .login-form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: var(--spacing-lg);
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--spacing-sm);
 }
 
 .form-group label {
   font-size: 14px;
-  font-weight: 600;
-  color: #333;
+  font-weight: 500;
+  color: var(--color-text-primary);
 }
 
 .form-group input {
   width: 100%;
-  padding: 12px 16px;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
+  padding: 11px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
   font-size: 14px;
-  transition: all 0.3s ease;
+  transition: all 0.15s ease;
   box-sizing: border-box;
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
 }
 
 .form-group input:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-accent-light);
 }
 
 .form-group input.error {
-  border-color: #ef4444;
+  border-color: var(--color-error);
 }
 
 .form-group input:disabled {
-  background-color: #f5f5f5;
+  background-color: var(--color-bg-tertiary);
   cursor: not-allowed;
+  opacity: 0.6;
 }
 
 .password-input-wrapper {
@@ -97,69 +103,67 @@
 }
 
 .password-input-wrapper input {
-  padding-right: 45px;
+  padding-right: 60px;
 }
 
 .password-toggle {
   position: absolute;
-  right: 12px;
-  background: none;
+  right: 1px;
+  background: transparent;
   border: none;
   cursor: pointer;
-  font-size: 20px;
-  padding: 4px;
-  opacity: 0.6;
-  transition: opacity 0.2s;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 11px 14px;
+  color: var(--color-accent);
+  transition: color 0.15s;
+  border-radius: var(--radius-md);
 }
 
 .password-toggle:hover {
-  opacity: 1;
+  color: var(--color-accent-hover);
+  background: var(--color-accent-light);
 }
 
 .error-message {
   font-size: 13px;
-  color: #ef4444;
-  margin-top: -4px;
+  color: var(--color-error);
+  margin-top: calc(var(--spacing-xs) * -1);
 }
 
 .alert {
   padding: 12px 16px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
+  border-radius: var(--radius-md);
   font-size: 14px;
+  line-height: 1.5;
 }
 
 .alert-error {
-  background-color: #fee;
-  border: 1px solid #fcc;
-  color: #c33;
-}
-
-.alert-icon {
-  font-size: 18px;
+  background-color: var(--color-error-light);
+  border: 1px solid var(--color-error);
+  color: #991b1b;
 }
 
 .btn {
-  padding: 14px 24px;
+  padding: 12px 20px;
   border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 600;
+  border-radius: var(--radius-md);
+  font-size: 15px;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.15s ease;
   width: 100%;
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--color-accent);
   color: white;
 }
 
 .btn-primary:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+  background: var(--color-accent-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
 }
 
 .btn-primary:active:not(:disabled) {
@@ -167,7 +171,7 @@
 }
 
 .btn:disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
@@ -175,16 +179,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: var(--spacing-sm);
 }
 
 .spinner {
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   border: 2px solid rgba(255, 255, 255, 0.3);
   border-top-color: white;
   border-radius: 50%;
-  animation: spin 0.6s linear infinite;
+  animation: spin 0.5s linear infinite;
 }
 
 @keyframes spin {
@@ -194,35 +198,39 @@
 }
 
 .login-footer {
-  margin-top: 24px;
+  margin-top: var(--spacing-lg);
+  padding-top: var(--spacing-lg);
   text-align: center;
   font-size: 14px;
-  color: #666;
+  color: var(--color-text-muted);
+  border-top: 1px solid var(--color-border);
 }
 
 .link-button {
   background: none;
   border: none;
-  color: #667eea;
-  font-weight: 600;
+  color: var(--color-accent);
+  font-weight: 500;
   cursor: pointer;
   text-decoration: none;
   padding: 0;
-  transition: color 0.2s;
+  transition: color 0.15s;
 }
 
 .link-button:hover {
-  color: #764ba2;
+  color: var(--color-accent-hover);
   text-decoration: underline;
 }
 
-/* Responsive Design */
+/* =================================================================
+   RESPONSIVE
+   ================================================================= */
 @media (max-width: 480px) {
   .login-card {
-    padding: 30px 20px;
+    padding: var(--spacing-lg);
   }
 
   .login-header h2 {
-    font-size: 24px;
+    font-size: 22px;
   }
 }

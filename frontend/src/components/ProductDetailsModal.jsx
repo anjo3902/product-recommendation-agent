@@ -124,29 +124,15 @@ const ProductDetailsModal = ({ product, onClose }) => {
     };
 
     const getCategoryIcon = () => {
-        const cat = category?.toLowerCase() || '';
-        if (cat.includes('laptop')) return '💻';
-        if (cat.includes('phone') || cat.includes('mobile')) return '📱';
-        if (cat.includes('headphone') || cat.includes('audio')) return '🎧';
-        if (cat.includes('camera')) return '📷';
-        if (cat.includes('watch')) return '⌚';
-        if (cat.includes('tablet')) return '📱';
-        if (cat.includes('speaker')) return '🔊';
-        if (cat.includes('tv') || cat.includes('television')) return '📺';
-        if (cat.includes('baby') || cat.includes('kids')) return '👶';
-        if (cat.includes('automotive') || cat.includes('car')) return '🚗';
-        if (cat.includes('home') || cat.includes('kitchen')) return '🏠';
-        if (cat.includes('fashion') || cat.includes('clothing')) return '👕';
-        if (cat.includes('sport') || cat.includes('fitness')) return '⚽';
-        if (cat.includes('book')) return '📚';
-        return '🛍️';
+        // Return full category name
+        return category || 'Product';
     };
 
     return (
         <div className="modal-overlay" onClick={onClose}>
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                 {/* Close Button */}
-                <button className="modal-close" onClick={onClose}>✕</button>
+                <button className="modal-close" onClick={onClose}>×</button>
 
                 <div className="modal-body">
                     {/* Left: Image */}
@@ -193,7 +179,7 @@ const ProductDetailsModal = ({ product, onClose }) => {
 
                         {/* Stock Status */}
                         <div className={`modal-stock ${in_stock ? 'in-stock' : 'out-of-stock'}`}>
-                            {in_stock ? '✅ In Stock' : '❌ Out of Stock'}
+                            {in_stock ? 'In Stock' : 'Out of Stock'}
                         </div>
 
                         {/* Description */}
@@ -207,7 +193,7 @@ const ProductDetailsModal = ({ product, onClose }) => {
                         {/* Specifications */}
                         {specifications && Object.keys(specifications).length > 0 ? (
                             <div className="modal-section">
-                                <h3>📋 Detailed Specifications</h3>
+                                <h3>Detailed Specifications</h3>
                                 <div className="specifications-detailed">
                                     {Object.entries(specifications).map(([key, value]) => (
                                         <div key={key} className="spec-row">
@@ -219,7 +205,7 @@ const ProductDetailsModal = ({ product, onClose }) => {
                             </div>
                         ) : (
                             <div className="modal-section">
-                                <h3>📋 Product Information</h3>
+                                <h3>Product Information</h3>
                                 <div className="specifications-detailed">
                                     <div className="spec-row">
                                         <div className="spec-row-label">Product Name</div>

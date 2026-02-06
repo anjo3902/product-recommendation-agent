@@ -218,8 +218,9 @@ const Signup = ({ onSwitchToLogin, onSignupSuccess }) => {
                 className="password-toggle"
                 onClick={() => setShowPassword(!showPassword)}
                 tabIndex={-1}
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
               >
-                {showPassword ? '👁️' : '👁️‍🗨️'}
+                {showPassword ? 'Hide' : 'Show'}
               </button>
             </div>
             {formErrors.password && (
@@ -254,8 +255,9 @@ const Signup = ({ onSwitchToLogin, onSignupSuccess }) => {
                 className="password-toggle"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 tabIndex={-1}
+                aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
               >
-                {showConfirmPassword ? '👁️' : '👁️‍🗨️'}
+                {showConfirmPassword ? 'Hide' : 'Show'}
               </button>
             </div>
             {formErrors.confirmPassword && (
@@ -266,7 +268,6 @@ const Signup = ({ onSwitchToLogin, onSignupSuccess }) => {
           {/* Server Error */}
           {error && (
             <div className="alert alert-error">
-              <span className="alert-icon">⚠️</span>
               <span>{error}</span>
             </div>
           )}
