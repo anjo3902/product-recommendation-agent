@@ -227,7 +227,16 @@ body {
   padding-top: var(--spacing-lg);
 }
 
-/* =================================================================
+/* Page Container - Keeps all pages mounted to preserve state */
+.page-container {
+  display: none; /* Hidden by default */
+}
+
+.page-container.active {
+  display: block; /* Show active page */
+}
+
+/* ================================================================= */
    FOOTER
    ================================================================= */
 

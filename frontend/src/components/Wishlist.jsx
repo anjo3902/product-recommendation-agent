@@ -7,38 +7,50 @@ import API_BASE_URL from '../config';
 import { getApiHeaders } from '../utils/api';
 import './Wishlist.css';
 
-const Wishlist = () => {
+const Wishlist = ({ isActive = true }) => {
   const { token } = useAuth();
   const [wishlistItems, setWishlistItems] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [editingNote, setEditingNote] = useState(null);
   const [noteText, setNoteText] = useState('');
   const [stats, setStats] = useState(null);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [hasLoaded, setHasLoaded] = useState(false);
 
-
-
-  // Fetch wishlist items
+  // Lazy load - only fetch when page becomes active for the first time
   useEffect(() => {
-    if (token) {
+    if (isActive && !hasLoaded && token) {
+      setHasLoaded(true);
       fetchWishlist();
       fetchStats();
-    } else {
-      setLoading(false);
-      setError('Please log in to view your wishlist');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token]);
+  }, [isActive, token]);
 
-  const fetchWishlist = async () => {
+  // Listen for wishlist changes from other components
+  useEffect(() => {
+    const handleWishlistChange = () => {
+      if (hasLoaded) {
+        fetchWishlist(true); // Silent refresh without loading spinner
+        fetchStats();
+      }
+    };
+
+    window.addEventListener('wishlistChanged', handleWishlistChange);
+    return () => window.removeEventListener('wishlistChanged', handleWishlistChange);
+  }, [hasLoaded]);
+
+  const fetchWishlist = async (silent = false) => {
     if (!token) {
       setError('Please log in to view your wishlist');
       return;
     }
 
     try {
-      setLoading(true);
+      if (!silent) {
+        setLoading(true);
+      }
       setError('');
 
       const response = await fetch(`${API_BASE_URL}/preferences/wishlist`, {
@@ -53,10 +65,14 @@ const Wishlist = () => {
       const data = await response.json();
       setWishlistItems(data);
     } catch (err) {
-      setError(err.message);
+      if (!silent) {
+        setError(err.message);
+      }
       console.error('Error fetching wishlist:', err);
     } finally {
-      setLoading(false);
+      if (!silent) {
+        setLoading(false);
+      }
     }
   };
 
@@ -84,6 +100,10 @@ const Wishlist = () => {
       return;
     }
 
+    // Optimistic UI update - remove immediately for smooth experience
+    const itemToRemove = wishlistItems.find(item => item.id === itemId);
+    setWishlistItems(wishlistItems.filter(item => item.id !== itemId));
+
     try {
       const response = await fetch(`${API_BASE_URL}/preferences/wishlist/${itemId}`, {
         method: 'DELETE',
@@ -94,12 +114,16 @@ const Wishlist = () => {
       });
 
       if (!response.ok) {
+        // Revert on error
+        setWishlistItems(prev => [...prev, itemToRemove]);
         throw new Error('Failed to remove item');
       }
 
-      // Update UI
-      setWishlistItems(wishlistItems.filter(item => item.id !== itemId));
-      fetchStats(); // Refresh stats
+      // Refresh stats after successful removal
+      fetchStats();
+      
+      // Notify other components about wishlist change
+      window.dispatchEvent(new Event('wishlistChanged'));
     } catch (err) {
       setError(err.message);
       console.error('Error removing item:', err);

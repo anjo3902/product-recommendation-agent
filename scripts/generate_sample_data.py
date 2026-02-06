@@ -12,7 +12,10 @@ from datetime import datetime, timedelta
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from sqlalchemy.orm import Session
-from src.database.models import Product, Review, PriceHistory, CardOffer
+from src.database.models import (
+    Product, Review, PriceHistory, CardOffer,
+    Wishlist, ShoppingCart, UserInteraction, Notification
+)
 from src.database.connection import SessionLocal
 import json
 
@@ -547,8 +550,8 @@ def generate_product_description(subcategory, features):
     return f"Premium {subcategory.lower()} with {', '.join(features[:3])}. Perfect for daily use."
 
 
-def generate_specifications(subcategory, features):
-    """Generate realistic product specifications based on subcategory"""
+def generate_specifications(subcategory, features, brand=''):
+    """Generate realistic product specifications based on subcategory and brand"""
     specs = {}
     
     if subcategory == 'Headphones':
@@ -572,8 +575,14 @@ def generate_specifications(subcategory, features):
             'refresh_rate': random.choice(['60Hz', '90Hz', '120Hz', '144Hz'])
         }
     elif subcategory == 'Laptops':
+        # Assign processors based on brand - Apple M series only for Apple laptops
+        if brand == 'Apple':
+            processor = random.choice(['Apple M1', 'Apple M2', 'Apple M3'])
+        else:
+            processor = random.choice(['Intel Core i3 11th Gen', 'Intel Core i5 12th Gen', 'Intel Core i5 13th Gen', 'Intel Core i7 12th Gen', 'Intel Core i7 13th Gen', 'AMD Ryzen 5 5500U', 'AMD Ryzen 5 7530U', 'AMD Ryzen 7 5800H', 'AMD Ryzen 7 6800H'])
+        
         specs = {
-            'processor': random.choice(['Intel Core i3 11th Gen', 'Intel Core i5 12th Gen', 'Intel Core i5 13th Gen', 'Intel Core i7 12th Gen', 'Intel Core i7 13th Gen', 'AMD Ryzen 5 5500U', 'AMD Ryzen 5 7530U', 'AMD Ryzen 7 5800H', 'AMD Ryzen 7 6800H', 'Apple M1', 'Apple M2', 'Apple M3']),
+            'processor': processor,
             'ram': random.choice(['8GB DDR4', '16GB DDR4', '16GB DDR5', '32GB DDR4', '32GB DDR5']),
             'storage': random.choice(['256GB SSD', '512GB SSD', '1TB SSD', '1TB SSD + 1TB HDD', '2TB SSD']),
             'display': random.choice(['14" FHD', '15.6" FHD', '15.6" 2K', '16" FHD', '17" FHD']),
@@ -1195,6 +1204,20 @@ def populate_database():
         print("\n🎯 Starting comprehensive data generation...")
         print("=" * 70)
         
+        # Clear existing data to prevent duplicates and ensure clean slate
+        print("\n🧹 Clearing existing data...")
+        # Delete in correct order to avoid foreign key violations
+        db.query(Notification).delete()
+        db.query(UserInteraction).delete()
+        db.query(ShoppingCart).delete()
+        db.query(Wishlist).delete()
+        db.query(CardOffer).delete()
+        db.query(PriceHistory).delete()
+        db.query(Review).delete()
+        db.query(Product).delete()
+        db.commit()
+        print("✅ Database cleared successfully!\n")
+        
         product_count = 0
         review_count = 0
         price_history_count = 0
@@ -1210,13 +1233,28 @@ def populate_database():
                 features_pool = data['features']
                 price_min, price_max = data['price_range']
                 
-                # Generate 8-12 products per subcategory for comprehensive testing
-                for _ in range(random.randint(8, 12)):
+                # Generate products per subcategory
+                # For Laptops: Generate more in budget-gaming range (₹40k-₹100k)
+                num_products = 20 if subcategory_name == 'Laptops' else random.randint(8, 12)
+                
+                for _ in range(num_products):
                     brand = random.choice(brands)
                     features = random.sample(features_pool, min(4, len(features_pool)))
                     
                     product_name = generate_product_name(category_name, subcategory_name, brand)
-                    base_price = round(random.uniform(price_min, price_max), 2)
+                    
+                    # Better price distribution for laptops (more in gaming range)
+                    if subcategory_name == 'Laptops':
+                        # 40% in ₹40k-₹80k (budget gaming), 40% in ₹80k-₹120k (mid-range), 20% in ₹120k-₹200k (premium)
+                        tier = random.choices([1, 2, 3], weights=[40, 40, 20])[0]
+                        if tier == 1:
+                            base_price = round(random.uniform(39999, 79999), 2)
+                        elif tier == 2:
+                            base_price = round(random.uniform(80000, 119999), 2)
+                        else:
+                            base_price = round(random.uniform(120000, price_max), 2)
+                    else:
+                        base_price = round(random.uniform(price_min, price_max), 2)
                     
                     # Calculate MRP (5-30% higher than selling price)
                     mrp_price = round(base_price * random.uniform(1.05, 1.30), 2)
@@ -1235,7 +1273,7 @@ def populate_database():
                         mrp=mrp_price,
                         description=generate_product_description(subcategory_name, features),
                         features=json.dumps(features),
-                        specifications=json.dumps(generate_specifications(subcategory_name, features)),
+                        specifications=json.dumps(generate_specifications(subcategory_name, features, brand)),
                         rating=round(random.uniform(3.5, 4.9), 1),
                         review_count=random.randint(10, 500),
                         in_stock=random.choice([True, True, True, False]),  # 75% in stock

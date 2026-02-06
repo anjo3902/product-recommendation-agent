@@ -153,7 +153,7 @@ const formatTextResponse = (text) => {
  * Conversation Agent Interface Component
  * Integrated with backend orchestrator for intelligent product recommendations
  */
-const ConversationAgent = () => {
+const ConversationAgent = ({ isActive = true }) => {
   const { token, user } = useAuth();
   const [conversations, setConversations] = useState([]);
   const [currentMessage, setCurrentMessage] = useState('');
@@ -163,13 +163,18 @@ const ConversationAgent = () => {
   const [activeAgents, setActiveAgents] = useState([]);
   const [orchestrating, setOrchestrating] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [hasLoaded, setHasLoaded] = useState(false);
   const messagesEndRef = useRef(null);
 
+  // Lazy load - only fetch when page becomes active for the first time
   useEffect(() => {
-    generateSessionId();
-    fetchConversations();
-    fetchSummary();
-  }, []);
+    if (isActive && !hasLoaded) {
+      setHasLoaded(true);
+      generateSessionId();
+      fetchConversations();
+      fetchSummary();
+    }
+  }, [isActive]);
 
   useEffect(() => {
     scrollToBottom();
@@ -178,6 +183,31 @@ const ConversationAgent = () => {
   const generateSessionId = () => {
     const id = `session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     setSessionId(id);
+  };
+
+  const handleNewSession = () => {
+    if (conversations.length > 0) {
+      // Confirm before clearing
+      const confirmed = window.confirm('Start a new session? This will clear your current conversation.');
+      if (!confirmed) return;
+    }
+    
+    // Clear current conversation state
+    setConversations([]);
+    setCurrentMessage('');
+    setSummary(null);
+    setActiveAgents([]);
+    setOrchestrating(false);
+    setLoading(false);
+    
+    // Generate new session ID
+    const newId = `session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    setSessionId(newId);
+    
+    console.log('✅ New session started:', newId);
+    
+    // Scroll to top to show welcome screen
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const scrollToBottom = () => {
@@ -854,10 +884,10 @@ const ConversationAgent = () => {
                                       ))}
                                     </tr>
                                     <tr className="title-row">
-                                      <td className="feature-name">Title</td>
+                                      <td className="feature-name"><strong>Title</strong></td>
                                       {conv.orchestratorData.comparison.full_comparison.products.map((product) => (
                                         <td key={product.product_id} className="product-title-cell">
-                                          {product.product_name}
+                                          <strong>{product.product_name || product.name || 'N/A'}</strong>
                                         </td>
                                       ))}
                                     </tr>
@@ -923,15 +953,15 @@ const ConversationAgent = () => {
                                     <tr>
                                       <td className="feature-name">Specifications</td>
                                       {conv.orchestratorData.comparison.full_comparison.products.map((product) => (
-                                        <td key={product.product_id}>
-                                          {product.specifications ? (
+                                        <td key={product.product_id} className="spec-cell">
+                                          {product.specifications && typeof product.specifications === 'object' && Object.keys(product.specifications).length > 0 ? (
                                             <ul className="spec-list">
                                               {Object.entries(product.specifications).slice(0, 3).map(([key, value]) => (
-                                                <li key={key}>{key}: {value}</li>
+                                                <li key={key}><strong>{key}:</strong> {value}</li>
                                               ))}
                                             </ul>
                                           ) : (
-                                            product.description?.substring(0, 100) + '...' || 'No details available'
+                                            <span className="no-specs">{product.description?.substring(0, 80) + '...' || 'No details available'}</span>
                                           )}
                                         </td>
                                       ))}
@@ -1025,14 +1055,14 @@ const ConversationAgent = () => {
           </form>
 
           <div className="input-actions">
-            <button className="action-btn" onClick={handleClearConversations}>
+            <button type="button" className="action-btn" onClick={handleClearConversations}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <polyline points="3 6 5 6 21 6"/>
                 <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
               </svg>
               <span>Clear History</span>
             </button>
-            <button className="action-btn" onClick={generateSessionId}>
+            <button type="button" className="action-btn" onClick={handleNewSession}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <polyline points="23 4 23 10 17 10"/>
                 <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>

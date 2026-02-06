@@ -60,24 +60,6 @@ function AppContent() {
     );
   }
 
-  // Render current page
-  const renderPage = () => {
-    switch (currentPage) {
-      case 'recommendations':
-        return <Recommendations />;
-      case 'agent':
-        return <ConversationAgent />;
-      case 'wishlist':
-        return <Wishlist />;
-      case 'history':
-        return <SearchHistory />;
-      case 'profile':
-        return <UserProfile />;
-      default:
-        return <Recommendations />;
-    }
-  };
-
   // Authenticated - show main app
   return (
     <div className="app">
@@ -143,7 +125,22 @@ function AppContent() {
 
       <main className="app-main">
         <Suspense fallback={<LoadingFallback />}>
-          {renderPage()}
+          {/* Render all pages but only show the active one - preserves state when switching tabs */}
+          <div className={currentPage === 'recommendations' ? 'page-container active' : 'page-container'}>
+            <Recommendations isActive={currentPage === 'recommendations'} />
+          </div>
+          <div className={currentPage === 'agent' ? 'page-container active' : 'page-container'}>
+            <ConversationAgent isActive={currentPage === 'agent'} />
+          </div>
+          <div className={currentPage === 'wishlist' ? 'page-container active' : 'page-container'}>
+            <Wishlist isActive={currentPage === 'wishlist'} />
+          </div>
+          <div className={currentPage === 'history' ? 'page-container active' : 'page-container'}>
+            <SearchHistory isActive={currentPage === 'history'} />
+          </div>
+          <div className={currentPage === 'profile' ? 'page-container active' : 'page-container'}>
+            <UserProfile isActive={currentPage === 'profile'} />
+          </div>
         </Suspense>
       </main>
 

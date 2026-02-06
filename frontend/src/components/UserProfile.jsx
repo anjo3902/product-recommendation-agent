@@ -6,7 +6,7 @@ import './UserProfile.css';
  * User Profile Component
  * Displays and allows editing of user profile information
  */
-const UserProfile = () => {
+const UserProfile = ({ isActive = true }) => {
   const { user, logout, updateProfile, changePassword } = useAuth();
 
   const [isEditingProfile, setIsEditingProfile] = useState(false);

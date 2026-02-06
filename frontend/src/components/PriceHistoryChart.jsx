@@ -90,17 +90,42 @@ const PriceHistoryChart = ({ productName, priceData }) => {
     if (!chartData || !canvasRef.current) return;
 
     const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    const { prices, labels } = chartData;
-
-    // Set canvas size
+    
+    // Check if canvas is actually visible before rendering
     const rect = canvas.getBoundingClientRect();
-    canvas.width = rect.width * window.devicePixelRatio;
-    canvas.height = rect.height * window.devicePixelRatio;
-    ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+    if (rect.width === 0 || rect.height === 0) {
+      // Canvas is hidden, retry when it becomes visible
+      const observer = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && entries[0].intersectionRatio > 0) {
+          observer.disconnect();
+          // Re-trigger rendering by calling this effect again
+          setTimeout(() => renderChart(), 100);
+        }
+      }, { threshold: 0.01 });
+      
+      observer.observe(canvas);
+      return () => observer.disconnect();
+    }
 
-    const width = rect.width;
-    const height = rect.height;
+    renderChart();
+
+    function renderChart() {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      
+      const ctx = canvas.getContext('2d');
+      const { prices, labels } = chartData;
+
+      // Set canvas size
+      const rect = canvas.getBoundingClientRect();
+      if (rect.width === 0 || rect.height === 0) return; // Still hidden, abort
+      
+      canvas.width = rect.width * window.devicePixelRatio;
+      canvas.height = rect.height * window.devicePixelRatio;
+      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+
+      const width = rect.width;
+      const height = rect.height;
     const padding = { top: 30, right: 30, bottom: 50, left: 60 };
 
     // Clear canvas
@@ -239,7 +264,7 @@ const PriceHistoryChart = ({ productName, priceData }) => {
         ctx.fillText(dateStr, x, height - padding.bottom + 20);
       }
     });
-
+    }
   }, [chartData]);
 
   const getBuyRecommendationPosition = () => {

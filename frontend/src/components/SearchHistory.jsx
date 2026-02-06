@@ -5,26 +5,23 @@ import API_BASE_URL from '../config';
 import { getApiHeaders } from '../utils/api';
 import './SearchHistory.css';
 
-const SearchHistory = () => {
+const SearchHistory = ({ isActive = true }) => {
   const { token } = useAuth();
   const [searchHistory, setSearchHistory] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [stats, setStats] = useState(null);
+  const [hasLoaded, setHasLoaded] = useState(false);
 
-
-
-  // Fetch search history
+  // Lazy load - only fetch when page becomes active for the first time
   useEffect(() => {
-    if (token) {
+    if (isActive && !hasLoaded && token) {
+      setHasLoaded(true);
       fetchSearchHistory();
       fetchStats();
-    } else {
-      setLoading(false);
-      setError('Please log in to view your search history');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token]);
+  }, [isActive, token]);
 
   const fetchSearchHistory = async () => {
     if (!token) {
