@@ -1,77 +1,36 @@
-# Product Recommendation Agent - Startup Script
-# This script starts all required services: Ollama, Backend, and Frontend
+# Start All Services for Product Recommendation System
+# This starts Ollama, Backend, and Frontend in separate windows
 
-Write-Host "========================================" -ForegroundColor Cyan
-Write-Host "  Product Recommendation Agent Startup  " -ForegroundColor Cyan
-Write-Host "========================================" -ForegroundColor Cyan
-Write-Host ""
+Write-Host "`n================================================" -ForegroundColor Green
+Write-Host "  STARTING ALL SERVICES" -ForegroundColor Yellow
+Write-Host "================================================`n" -ForegroundColor Green
 
-# Check if services are already running
-Write-Host "[1/4] Checking for existing services..." -ForegroundColor Yellow
+# Start Ollama
+Write-Host "[1/3] Starting Ollama..." -ForegroundColor Cyan
+Start-Process powershell -ArgumentList "-NoExit", "-Command", "Write-Host '>>> OLLAMA SERVICE <<<' -ForegroundColor Green; ollama serve" -WindowStyle Normal
+Start-Sleep -Seconds 2
+Write-Host "      ✅ Ollama window opened`n" -ForegroundColor White
 
-$ollamaRunning = Get-Process -Name "ollama" -ErrorAction SilentlyContinue
-$pythonRunning = Get-NetTCPConnection -LocalPort 8000 -ErrorAction SilentlyContinue
-$nodeRunning = Get-NetTCPConnection -LocalPort 3000 -ErrorAction SilentlyContinue
+# Start Backend
+Write-Host "[2/3] Starting Backend..." -ForegroundColor Cyan
+Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd 'C:\Users\ANJO JAISON\Downloads\Product Recommendation Agent'; Write-Host '>>> BACKEND SERVER <<<' -ForegroundColor Green; python -m uvicorn main:app --host 127.0.0.1 --port 8000 --reload" -WindowStyle Normal
+Start-Sleep -Seconds 2
+Write-Host "      ✅ Backend window opened`n" -ForegroundColor White
 
-if ($ollamaRunning) {
-    Write-Host "  [OK] Ollama is already running" -ForegroundColor Green
-} else {
-    Write-Host "  [!] Ollama not running - will start" -ForegroundColor Yellow
-}
+# Start Frontend
+Write-Host "[3/3] Starting Frontend..." -ForegroundColor Cyan
+Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd 'C:\Users\ANJO JAISON\Downloads\Product Recommendation Agent\frontend'; Write-Host '>>> FRONTEND SERVER <<<' -ForegroundColor Green; npm start" -WindowStyle Normal
+Write-Host "      ✅ Frontend window opened`n" -ForegroundColor White
 
-if ($pythonRunning) {
-    Write-Host "  [OK] Backend is already running on port 8000" -ForegroundColor Green
-} else {
-    Write-Host "  [!] Backend not running - will start" -ForegroundColor Yellow
-}
+Write-Host "================================================" -ForegroundColor Green
+Write-Host "⏳ Waiting for services to start..." -ForegroundColor Yellow
+Write-Host "================================================`n" -ForegroundColor Green
 
-if ($nodeRunning) {
-    Write-Host "  [OK] Frontend is already running on port 3000" -ForegroundColor Green
-} else {
-    Write-Host "  [!] Frontend not running - will start" -ForegroundColor Yellow
-}
+Write-Host "Services are starting in separate windows." -ForegroundColor White
+Write-Host "Please wait 20-30 seconds for all to load.`n" -ForegroundColor White
 
-Write-Host ""
+Write-Host "To check status, run:" -ForegroundColor Cyan
+Write-Host "  .\check-status.ps1`n" -ForegroundColor Yellow
 
-# Start Ollama if not running
-if (-not $ollamaRunning) {
-    Write-Host "[2/4] Starting Ollama..." -ForegroundColor Yellow
-    Start-Process -FilePath "ollama" -ArgumentList "serve" -WindowStyle Minimized
-    Write-Host "  [OK] Ollama started" -ForegroundColor Green
-    Start-Sleep -Seconds 3
-} else {
-    Write-Host "[2/4] Ollama already running - skipping" -ForegroundColor Green
-}
-
-# Start Backend if not running
-if (-not $pythonRunning) {
-    Write-Host "[3/4] Starting Backend API..." -ForegroundColor Yellow
-    Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$PSScriptRoot'; python -m uvicorn main:app --host 127.0.0.1 --port 8000" -WindowStyle Normal
-    Write-Host "  [OK] Backend started on http://127.0.0.1:8000" -ForegroundColor Green
-    Start-Sleep -Seconds 5
-} else {
-    Write-Host "[3/4] Backend already running - skipping" -ForegroundColor Green
-}
-
-# Start Frontend if not running
-if (-not $nodeRunning) {
-    Write-Host "[4/4] Starting Frontend..." -ForegroundColor Yellow
-    Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$PSScriptRoot\frontend'; npm start" -WindowStyle Normal
-    Write-Host "  [OK] Frontend starting on http://localhost:3000" -ForegroundColor Green
-    Write-Host "  [i] Frontend will open in browser automatically" -ForegroundColor Cyan
-} else {
-    Write-Host "[4/4] Frontend already running - skipping" -ForegroundColor Green
-}
-
-Write-Host ""
-Write-Host "========================================" -ForegroundColor Cyan
-Write-Host "  All Services Started Successfully!    " -ForegroundColor Green
-Write-Host "========================================" -ForegroundColor Cyan
-Write-Host ""
-Write-Host "Service URLs:" -ForegroundColor White
-Write-Host "  Frontend:  http://localhost:3000" -ForegroundColor Cyan
-Write-Host "  Backend:   http://127.0.0.1:8000" -ForegroundColor Cyan
-Write-Host "  API Docs:  http://127.0.0.1:8000/docs" -ForegroundColor Cyan
-Write-Host ""
-Write-Host "Press any key to exit this window..." -ForegroundColor Gray
-$null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+Write-Host "Your browser will open automatically to:" -ForegroundColor White
+Write-Host "  http://localhost:3000`n" -ForegroundColor Yellow
