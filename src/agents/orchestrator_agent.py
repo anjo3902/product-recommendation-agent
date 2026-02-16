@@ -267,13 +267,13 @@ class OrchestratorAgent:
             return {
                 product_id: (
                     result if not isinstance(result, (Exception, asyncio.TimeoutError))
-                    else {"success": False, "error": "Timeout" if isinstance(result, asyncio.TimeoutError) else str(result)}
+                    else {"success": False, "available": False, "error": "Timeout" if isinstance(result, asyncio.TimeoutError) else str(result)}
                 )
                 for product_id, result in zip(product_ids, results)
             }
         except Exception as e:
             logger.error(f"Price tracking error: {e}")
-            return {pid: {"success": False, "error": str(e)} for pid in product_ids}
+            return {pid: {"success": False, "available": False, "error": str(e)} for pid in product_ids}
     
     async def _compare_products(self, product_ids: List[int]) -> Dict[str, Any]:
         """Run product comparison with timeout"""

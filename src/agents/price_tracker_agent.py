@@ -86,6 +86,7 @@ class PriceTrackerAgent:
             if not product:
                 return {
                     "success": False,
+                    "available": False,
                     "error": f"Product {product_id} not found"
                 }
             
@@ -111,6 +112,7 @@ class PriceTrackerAgent:
             
             return {
                 "success": True,
+                "available": True,  # Frontend checks this field
                 "product_id": product_id,
                 "product_name": product.name,
                 "price_data": trend_data,
@@ -124,6 +126,7 @@ class PriceTrackerAgent:
             logger.error(f"Price analysis error: {e}")
             return {
                 "success": False,
+                "available": False,
                 "error": str(e)
             }
         finally:
